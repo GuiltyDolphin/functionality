@@ -5,6 +5,15 @@
 
 * Unreleased
 
+** Added
+
+- files
+  - =mod.ts=
+  - =src/functional.ts=
+- types
+  - =Either= (a value that can be one of two types)
+  - =Maybe= (an optional value)
+
 * 0.0.0 - 2021-05-23
 
 ** Added
