@@ -1,0 +1,24 @@
+#+TITLE: Changelog
+#+OPTIONS: H:10
+#+OPTIONS: num:nil
+#+OPTIONS: toc:2
+
+* Unreleased
+
+** Added
+
+- files
+  - =CHANGELOG.org=
+  - =.gitignore=
+  - =LICENSE=
+  - =Makefile=
+  - =README.org=
+  - =tsconfig.json=
+- Make recipes
+  - =coverage= for building project coverage
+  - =setup_emacs_dev=
+  - =test=
+  - =test_quiet= for running tests and suppressing output of
+    tests that passed
+  - =test_verbose= for running tests with verbose output
+    (i.e., includes tests that passed)

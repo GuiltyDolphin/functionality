@@ -1,0 +1,18 @@
+#+TITLE: Functionality
+
+This package provides utilities for functional programming
+with TypeScript.
+
+* Development
+
+** Coverage
+
+To generate code test coverage, make sure you have access to
+the =genhtml= tool (e.g., via the [[https://aur.archlinux.org/packages/lcov/][lcov package on AUR]]), then
+run =make coverage= in the top-level of the project.
+
+** Testing
+
+Run =make test= in the top-level of the project to run the
+tests. If you need to see results for tests that passed, run
+=make test_verbose= or =deno test= instead.
