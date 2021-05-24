@@ -10,8 +10,15 @@
 - dependencies
   - https://deno.land/x/dentest@v0.1.0
 - files
+  - =src/either.ts=
+  - =src/functor.ts=
+  - =src/generic.ts=
+  - =src/maybe.ts=
+  - =src/monad.ts=
+  - =src/unwrap.ts=
   - =tests/deps.ts=
-  - =tests/functional_test.ts=
+  - =tests/either_test.ts=
+  - =tests/maybe_test.ts=
 - =Unwrap= interface for values that can be unwrapped
 
 ** Changed
