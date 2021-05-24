@@ -2,6 +2,13 @@ import * as Monad from './monad.ts';
 import { Bind } from './monad.ts';
 import { Unwrap } from './unwrap.ts';
 
+import { Generic1 } from './generic.ts';
+declare module './generic.ts' {
+    interface Generic1<T> {
+        Maybe: Maybe<T>
+    }
+}
+
 abstract class MaybeComponent<T> implements Bind<'Maybe', T> {
     isSome<T>(): this is Some<T> {
         return this instanceof _Some;

@@ -1,4 +1,4 @@
-import * as Functor from './functor.ts';
+import { Functor } from './functor.ts';
 import { Gen1T, Generic1Key } from './generic.ts';
 
 export interface Bind<K extends Generic1Key, T> extends Functor<K, T> {

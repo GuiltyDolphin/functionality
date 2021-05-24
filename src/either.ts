@@ -1,6 +1,13 @@
 import { Bind } from './monad.ts';
 import { Unwrap } from './unwrap.ts';
 
+import { Generic1 } from './generic.ts';
+declare module './generic.ts' {
+    interface Generic1<T> {
+        Either: Either<unknown, T>
+    }
+}
+
 abstract class EitherComponent<L, R> implements Bind<'Either', R>, Unwrap<L | R> {
     isLeft(): this is Left<L, R> {
         return this instanceof _Left;
