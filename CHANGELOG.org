@@ -13,6 +13,12 @@
   - =tests/deps.ts=
   - =tests/functional_test.ts=
 
+** Changed
+
+- unwrapping is now more type safe (e.g., you can only
+  left-unwrap an =Either<L, R>= if you have established that
+  it is actually a left value)
+
 * 0.1.0 - 2021-05-23
 
 ** Added

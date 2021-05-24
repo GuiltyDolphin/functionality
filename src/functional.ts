@@ -25,150 +25,106 @@ namespace Monad {
     }
 }
 
-export class Maybe<T> implements Bind<'Maybe', T> {
-    private readonly value: [] | [T];
-
-    private constructor(...args: T[]) {
-        this.value = args.length == 1 ? [args[0]] : [];
-        if (args.length > 1) {
-            throw new TypeError('too many arguments to Maybe constructor');
-        }
+abstract class MaybeComponent<T> implements Bind<'Maybe', T> {
+    isSome<T>(): this is Some<T> {
+        return this instanceof _Some;
     }
 
-    isSome(): boolean {
-        return this.value.length == 1;
+    isNone(): this is None<T> {
+        return this instanceof _None;
     }
 
-    isNone(): boolean {
-        return this.value.length == 0;
-    }
-
-    /**
-     * Only use this if you know you have some.
-     */
-    unwrap(): T | never {
-        if (this.value.length == 1) {
-            return this.value[0];
-        } else {
-            throw new TypeError('tried to unwrap a nothing value');
-        }
-    }
-
-    maybef<R>(ifNone: () => R, ifSome: (t1: T) => R): R {
-        if (this.isSome()) {
-            return ifSome(this.unwrap());
-        }
-        return ifNone();
-    }
+    abstract maybef<R>(ifNone: () => R, ifSome: (t1: T) => R): R
 
     maybe<R>(ifNone: R, ifSome: (t1: T) => R): R {
         return this.maybef(() => ifNone, ifSome);
     }
 
     map<R>(f: (x: T) => R): Maybe<R> {
-        return this.maybe(Maybe.none(), x => Maybe.some(f(x)));
+        return this.maybe<Maybe<R>>(Maybe.none(), x => Maybe.some(f(x)));
     }
 
     bind<R>(f: (x: T) => Maybe<R>): Maybe<R> {
         return this.maybe(Maybe.none(), f);
     }
+}
 
-    static none<T>(): Maybe<T> {
-        return new Maybe();
+class _None<T> extends MaybeComponent<T> {
+    maybef<R>(ifNone: () => R, _ifSome: (t1: T) => R): R {
+        return ifNone();
+    }
+}
+
+export type None<T> = _None<T>
+
+class _Some<T> extends MaybeComponent<T> {
+    private readonly value: T;
+
+    constructor(value: T) {
+        super();
+        this.value = value;
     }
 
-    static some<T>(x: T): Maybe<T> {
-        return new Maybe(x);
+    unwrap(): T {
+        return this.value;
     }
 
-    static pure<T>(x: T): Maybe<T> {
-        return Maybe.some(x);
+    maybef<R>(_ifNone: () => R, ifSome: (t1: T) => R): R {
+        return ifSome(this.value);
+    }
+}
+
+export type Some<T> = _Some<T>
+
+export type Maybe<T> = None<T> | Some<T>
+
+export namespace Maybe {
+    export function none<T>(): None<T> {
+        return new _None();
     }
 
-    static fail<T>(): Maybe<T> {
+    export function some<T>(x: T): Some<T> {
+        return new _Some(x);
+    }
+
+    export function fail<T>(): Maybe<T> {
         return Maybe.none();
     }
 
-    static join<T>(x: Maybe<Maybe<T>>): Maybe<T> {
+    export function pure<T>(x: T): Maybe<T> {
+        return Maybe.some(x);
+    }
+
+    export function join<T>(x: Maybe<Maybe<T>>): Maybe<T> {
         return Monad.join<'Maybe', T>(x);
     }
 }
 
-export class Either<L, R> implements Bind<'Either', R> {
-    private readonly leftValue: Maybe<L>;
-    private readonly rightValue: Maybe<R>;
-
-    private constructor(left: Maybe<L>, right: Maybe<R>) {
-        if (left.isSome() && right.isNone() || left.isNone() && right.isSome()) {
-            this.leftValue = left;
-            this.rightValue = right;
-        } else {
-            throw new TypeError('exactly one of left and right must be some');
-        }
+abstract class EitherComponent<L, R> implements Bind<'Either', R> {
+    isLeft(): this is Left<L, R> {
+        return this instanceof _Left;
     }
 
-    isLeft(): boolean {
-        return this.leftValue.isSome();
+    isRight(): this is Right<L, R> {
+        return this instanceof _Right;
     }
 
-    isRight(): boolean {
-        return this.rightValue.isSome();
-    }
-
-    mapBoth<L2, R2>(onLeft: (l: L) => L2, onRight: (r: R) => R2): Either<L2, R2> {
-        return this.either(l => Either.left(onLeft(l)), r => Either.right(onRight(r)));
-    }
+    abstract either<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T
 
     map<R2>(f: (x: R) => R2): Either<L, R2> {
-        return this.mapBoth(x => x, r => f(r));
-    }
-
-    static joinLeft<L1, L2, R>(v: Either<L1, Either<L2, R>>): Either<L1 | L2, R> {
-        return v.either(l => Either.left<L1 | L2, R>(l), r => r.either(l => Either.left(l), r => Either.right(r)));
-    }
-
-    mapCollecting<L2, R2>(f: (x: R) => Either<L2, R2>): Either<L | L2, R2> {
-        return Either.joinLeft(this.map(f));
-    }
-
-    either<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T {
-        if (this.isLeft()) {
-            return onLeft(this.unwrapLeft());
-        } else {
-            return onRight(this.unwrapRight());
-        }
+        return this.mapBoth(l => l, r => f(r));
     }
 
     bind<R2>(f: (r: R) => Either<L, R2>): Either<L, R2> {
         return this.either(l => Either.left(l), r => f(r));
     }
 
-    /**
-     * Only use if you know you have a left value.
-     */
-    unwrapLeft(): L | never {
-        return this.leftValue.unwrap();
+    mapBoth<L2, R2>(onLeft: (l: L) => L2, onRight: (r: R) => R2): Either<L2, R2> {
+        return this.either<Either<L2, R2>>(l => Either.left(onLeft(l)), r => Either.right(onRight(r)));
     }
 
-    /**
-     * Only use if you know you have a right value.
-     */
-    unwrapRight(): R | never {
-        return this.rightValue.unwrap();
-    }
-
-    /**
-     * Propagate a left value. Only use this if you know the value is a left.
-     */
-    propLeft<R2>(): Either<L, R2> | never {
-        return Either.left(this.unwrapLeft());
-    }
-
-    /**
-     * Propagate a right value. Only use this if you know the value is a right.
-     */
-    propRight<L2>(): Either<L2, R> | never {
-        return Either.right(this.unwrapRight());
+    mapCollecting<L2, R2>(f: (x: R) => Either<L2, R2>): Either<L | L2, R2> {
+        return Either.joinLeft(this.map(f));
     }
 
     /**
@@ -177,34 +133,95 @@ export class Either<L, R> implements Bind<'Either', R> {
     orThrow(): R | never {
         return this.either(l => { throw l }, r => r);
     }
+}
 
-    static pure<L, R>(x: R): Either<L, R> {
-        return Either.right(x);
+class _Left<L, R> extends EitherComponent<L, R> {
+    private readonly value: L;
+
+    constructor(value: L) {
+        super();
+        this.value = value;
     }
 
-    static fail<L, R>(e: L): Either<L, R> {
-        return Either.left(e);
+    /**
+     * Propagate a left value.
+     */
+    propLeft<R2>(): Left<L, R2> {
+        return Either.left(this.value);
     }
 
-    static left<L, R>(value: L): Either<L, R> {
-        return new Either(Maybe.some(value), Maybe.none());
+    unwrapLeft(): L {
+        return this.value;
     }
 
-    static right<L, R>(value: R): Either<L, R> {
-        return new Either(Maybe.none(), Maybe.some(value));
+    either<T>(onLeft: (l: L) => T, _onRight: (r: R) => T): T {
+        return onLeft(this.value);
+    }
+}
+
+type Left<L, R> = _Left<L, R>
+
+class _Right<L, R> extends EitherComponent<L, R> {
+    private readonly value: R;
+
+    constructor(value: R) {
+        super();
+        this.value = value;
     }
 
-    static unEither<L>(v: Either<L, L>): L {
+    unwrapRight(): R {
+        return this.value;
+    }
+
+    /**
+     * Propagate a right value.
+     */
+    propRight<L2>(): Right<L2, R> {
+        return Either.right(this.value);
+    }
+
+    either<T>(_onLeft: (l: L) => T, onRight: (r: R) => T): T {
+        return onRight(this.value);
+    }
+}
+
+type Right<L, R> = _Right<L, R>
+
+export type Either<L, R> = Left<L, R> | Right<L, R>
+
+export namespace Either {
+    export function left<L, R>(l: L): Left<L, R> {
+        return new _Left(l);
+    }
+
+    export function right<L, R>(r: R): Right<L, R> {
+        return new _Right(r);
+    }
+
+    export function fail<L, R>(l: L): Either<L, R> {
+        return left(l);
+    }
+
+    export function pure<L, R>(r: R): Either<L, R> {
+        return right(r);
+    }
+
+    export function joinLeft<L1, L2, R>(v: Either<L1, Either<L2, R>>): Either<L1 | L2, R> {
+        return v.either(l => Either.left(l), r => r.either<Either<L1 | L2, R>>(l => Either.left(l), r => Either.right(r)));
+    }
+
+    export function unEither<L>(v: Either<L, L>): L {
         return v.either(x => x, x => x);
     }
 
-    static catEithers<L, R>(es: Either<L, R>[]): Either<L, R[]> {
+    export function catEithers<L, R>(es: Either<L, R>[]): Either<L, R[]> {
         const res: R[] = [];
         for (let i = 0; i < es.length; i++) {
-            if (es[i].isLeft()) {
-                return es[i].propLeft();
+            const esi = es[i];
+            if (esi.isLeft()) {
+                return esi.propLeft();
             } else {
-                res[i] = es[i].unwrapRight();
+                res[i] = esi.unwrapRight();
             }
         }
         return Either.right(res);

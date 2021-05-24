@@ -55,23 +55,23 @@ testGroup('Either',
     ),
 
     testGroup('unwrapLeft',
-        new Test('unwrapping right is error', () => assertThrows(() => Either.right(1).unwrapLeft(), TypeError)),
+        new Test('cannot left-unwrap a right', () => assert(!('unwrapLeft' in Either.right(1)))),
         new Test('unwrapping left is value', () => assertEquals(Either.left(2).unwrapLeft(), 2)),
     ),
 
     testGroup('unwrapRight',
-        new Test('unwrapping left is error', () => assertThrows(() => Either.left(1).unwrapRight(), TypeError)),
+        new Test('cannot right-unwrap a left', () => assert(!('unwrapRight' in Either.left(1)))),
         new Test('unwrapping right is value', () => assertEquals(Either.right(2).unwrapRight(), 2)),
     ),
 
     testGroup('propLeft',
         new Test('propagating left is left', () => assertEquals(Either.left(1).propLeft(), Either.left(1))),
-        new Test('propagating right is error', () => assertThrows(() => Either.right(2).propLeft(), TypeError)),
+        new Test('cannot left-propagate a right', () => assert(!('propLeft' in Either.right(2)))),
     ),
 
     testGroup('propRight',
         new Test('propagating right is right', () => assertEquals(Either.right(1).propRight(), Either.right(1))),
-        new Test('propagating left is error', () => assertThrows(() => Either.left(2).propRight(), TypeError)),
+        new Test('cannot right-propagate a left', () => assert(!('propRight' in Either.left(2)))),
     ),
 
     testGroup('orThrow',
@@ -133,7 +133,7 @@ testGroup('Maybe',
     ),
 
     testGroup('unwrap',
-        new Test('unwrapping none is error', () => assertThrows(() => Maybe.none<number>().unwrap(), TypeError)),
+        new Test('cannot unwrap a none', () => assert(!('unwrap' in Maybe.none()))),
         new Test('unwrapping some is value', () => assertEquals(Maybe.some(2).unwrap(), 2)),
     ),
 ).runAsMain();
