@@ -12,6 +12,7 @@
 - files
   - =tests/deps.ts=
   - =tests/functional_test.ts=
+- =Unwrap= interface for values that can be unwrapped
 
 ** Changed
 

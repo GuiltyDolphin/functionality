@@ -19,6 +19,11 @@ interface Bind<K extends Generic1Key, T> extends Functor<K, T> {
     bind<T2>(f: (t: T) => Gen1T<K, T2>): Gen1T<K, T2>
 }
 
+/** Represents a type that contains a value of type 'T'. */
+export interface Unwrap<T> {
+    unwrap(): T
+}
+
 namespace Monad {
     export function join<K extends Generic1Key, T>(x: Bind<K, Gen1T<K, T>>): Gen1T<K, T> {
         return x.bind<T>(y => y);
@@ -57,7 +62,7 @@ class _None<T> extends MaybeComponent<T> {
 
 export type None<T> = _None<T>
 
-class _Some<T> extends MaybeComponent<T> {
+class _Some<T> extends MaybeComponent<T> implements Unwrap<T> {
     private readonly value: T;
 
     constructor(value: T) {
@@ -100,7 +105,7 @@ export namespace Maybe {
     }
 }
 
-abstract class EitherComponent<L, R> implements Bind<'Either', R> {
+abstract class EitherComponent<L, R> implements Bind<'Either', R>, Unwrap<L | R> {
     isLeft(): this is Left<L, R> {
         return this instanceof _Left;
     }
@@ -110,6 +115,8 @@ abstract class EitherComponent<L, R> implements Bind<'Either', R> {
     }
 
     abstract either<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T
+
+    abstract unwrap(): L | R;
 
     map<R2>(f: (x: R) => R2): Either<L, R2> {
         return this.mapBoth(l => l, r => f(r));
@@ -135,7 +142,7 @@ abstract class EitherComponent<L, R> implements Bind<'Either', R> {
     }
 }
 
-class _Left<L, R> extends EitherComponent<L, R> {
+class _Left<L, R> extends EitherComponent<L, R> implements Unwrap<L> {
     private readonly value: L;
 
     constructor(value: L) {
@@ -151,6 +158,10 @@ class _Left<L, R> extends EitherComponent<L, R> {
     }
 
     unwrapLeft(): L {
+        return this.unwrap();
+    }
+
+    unwrap(): L {
         return this.value;
     }
 
@@ -161,7 +172,7 @@ class _Left<L, R> extends EitherComponent<L, R> {
 
 type Left<L, R> = _Left<L, R>
 
-class _Right<L, R> extends EitherComponent<L, R> {
+class _Right<L, R> extends EitherComponent<L, R> implements Unwrap<R> {
     private readonly value: R;
 
     constructor(value: R) {
@@ -170,6 +181,10 @@ class _Right<L, R> extends EitherComponent<L, R> {
     }
 
     unwrapRight(): R {
+        return this.unwrap();
+    }
+
+    unwrap(): R {
         return this.value;
     }
 
@@ -211,7 +226,7 @@ export namespace Either {
     }
 
     export function unEither<L>(v: Either<L, L>): L {
-        return v.either(x => x, x => x);
+        return v.unwrap();
     }
 
     export function catEithers<L, R>(es: Either<L, R>[]): Either<L, R[]> {
@@ -221,7 +236,7 @@ export namespace Either {
             if (esi.isLeft()) {
                 return esi.propLeft();
             } else {
-                res[i] = esi.unwrapRight();
+                res[i] = esi.unwrap();
             }
         }
         return Either.right(res);

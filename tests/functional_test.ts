@@ -54,6 +54,11 @@ testGroup('Either',
         new Test('bind right is right', () => assertEquals(Either.right(1).bind(x => Either.pure(x + 1)), Either.right(2))),
     ),
 
+    testGroup('unwrap',
+        new Test('from pure', () => assertEquals(Either.pure(1).unwrap(), 1)),
+        new Test('from fail', () => assertEquals(Either.fail(2).unwrap(), 2)),
+    ),
+
     testGroup('unwrapLeft',
         new Test('cannot left-unwrap a right', () => assert(!('unwrapLeft' in Either.right(1)))),
         new Test('unwrapping left is value', () => assertEquals(Either.left(2).unwrapLeft(), 2)),
