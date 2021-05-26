@@ -62,6 +62,10 @@ export type Some<T> = _Some<T>
 
 export type Maybe<T> = None<T> | Some<T>
 
+export function isMaybe(x: unknown): x is Maybe<unknown> {
+    return x instanceof _None || x instanceof _Some;
+}
+
 export function none<T>(): None<T> {
     return new _None();
 }

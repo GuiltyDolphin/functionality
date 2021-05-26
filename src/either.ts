@@ -107,6 +107,10 @@ type Right<L, R> = _Right<L, R>
 
 export type Either<L, R> = Left<L, R> | Right<L, R>
 
+export function isEither(x: any): x is Either<unknown, unknown> {
+    return x instanceof _Left || x instanceof _Right;
+}
+
 export function left<L, R>(l: L): Left<L, R> {
     return new _Left(l);
 }

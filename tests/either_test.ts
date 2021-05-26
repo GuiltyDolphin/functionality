@@ -19,6 +19,12 @@ testGroup('Either',
         new Test('left is not right', () => assert(!(Either.left(1).isRight()))),
     ),
 
+    testGroup('isEither',
+        new Test('left is Either', () => assert(Either.isEither(Either.left(1)))),
+        new Test('right is either', () => assert(Either.isEither(Either.right(true)))),
+        new Test('number is not Either', () => assert(!(Either.isEither(1)))),
+    ),
+
     new Test('fail is left', () => assertEquals(Either.fail(7), Either.left(7))),
 
     new Test('pure is right', () => assertEquals(Either.pure(7), Either.right(7))),

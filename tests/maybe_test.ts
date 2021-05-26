@@ -18,6 +18,12 @@ testGroup('Maybe',
         new Test('none is not some', () => assert(!(Maybe.none().isSome()))),
     ),
 
+    testGroup('isMaybe',
+        new Test('none is Maybe', () => assert(Maybe.isMaybe(Maybe.none()))),
+        new Test('some is Maybe', () => assert(Maybe.isMaybe(Maybe.some(true)))),
+        new Test('number is not Maybe', () => assert(!(Maybe.isMaybe(1)))),
+    ),
+
     new Test('fail is none', () => assertEquals(Maybe.fail(), Maybe.none())),
 
     new Test('pure is some', () => assertEquals(Maybe.pure(7), Maybe.some(7))),
