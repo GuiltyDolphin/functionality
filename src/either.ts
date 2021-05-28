@@ -1,14 +1,19 @@
-import { Bind } from './monad.ts';
+import { IsFunctor } from './functor.ts';
+import { AMonad, IsMonad } from './monad.ts';
 import { Unwrap } from './unwrap.ts';
 
 import { Generic1 } from './generic.ts';
 declare module './generic.ts' {
     interface Generic1<T> {
-        Either: Either<unknown, T>
+        Either: Either<any, T>
     }
 }
 
-abstract class EitherComponent<L, R> implements Bind<'Either', R>, Unwrap<L | R> {
+abstract class EitherComponent<L, R> extends AMonad<'Either', R> implements Unwrap<L | R> {
+    isMonad() {
+        return isMonad;
+    }
+
     isLeft(): this is Left<L, R> {
         return this instanceof _Left;
     }
@@ -20,14 +25,6 @@ abstract class EitherComponent<L, R> implements Bind<'Either', R>, Unwrap<L | R>
     abstract either<T>(onLeft: (l: L) => T, onRight: (r: R) => T): T
 
     abstract unwrap(): L | R;
-
-    map<R2>(f: (x: R) => R2): Either<L, R2> {
-        return this.mapBoth(l => l, r => f(r));
-    }
-
-    bind<R2>(f: (r: R) => Either<L, R2>): Either<L, R2> {
-        return this.either(l => left(l), r => f(r));
-    }
 
     mapBoth<L2, R2>(onLeft: (l: L) => L2, onRight: (r: R) => R2): Either<L2, R2> {
         return this.either<Either<L2, R2>>(l => left(onLeft(l)), r => right(onRight(r)));
@@ -107,6 +104,16 @@ type Right<L, R> = _Right<L, R>
 
 export type Either<L, R> = Left<L, R> | Right<L, R>
 
+export const isFunctor: IsFunctor<'Either'> = {
+    map: (f, x) => x.mapBoth(l => l, r => f(r)),
+};
+
+export const isMonad: IsMonad<'Either'> = {
+    ...isFunctor,
+    pure: (x) => right(x),
+    bind: (x, f) => x.either(l => left(l), r => f(r))
+};
+
 export function isEither(x: any): x is Either<unknown, unknown> {
     return x instanceof _Left || x instanceof _Right;
 }
@@ -124,7 +131,7 @@ export function fail<L, R>(l: L): Either<L, R> {
 }
 
 export function pure<L, R>(r: R): Either<L, R> {
-    return right(r);
+    return isMonad.pure(r);
 }
 
 export function joinLeft<L1, L2, R>(v: Either<L1, Either<L2, R>>): Either<L1 | L2, R> {

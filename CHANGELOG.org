@@ -23,6 +23,8 @@
 
 ** Changed
 
+- =Bind= interface replaced with =Monad=
+  - now required to provide a definition of =pure=
 - unwrapping is now more type safe (e.g., you can only
   left-unwrap an =Either<L, R>= if you have established that
   it is actually a left value)

@@ -1,5 +1,5 @@
+import { IsFunctor } from './functor.ts';
 import * as Monad from './monad.ts';
-import { Bind } from './monad.ts';
 import { Unwrap } from './unwrap.ts';
 
 import { Generic1 } from './generic.ts';
@@ -9,7 +9,11 @@ declare module './generic.ts' {
     }
 }
 
-abstract class MaybeComponent<T> implements Bind<'Maybe', T> {
+abstract class MaybeComponent<T> extends Monad.AMonad<'Maybe', T> {
+    isMonad() {
+        return isMonad;
+    }
+
     isSome<T>(): this is Some<T> {
         return this instanceof _Some;
     }
@@ -22,14 +26,6 @@ abstract class MaybeComponent<T> implements Bind<'Maybe', T> {
 
     maybe<R>(ifNone: R, ifSome: (t1: T) => R): R {
         return this.maybef(() => ifNone, ifSome);
-    }
-
-    map<R>(f: (x: T) => R): Maybe<R> {
-        return this.maybe<Maybe<R>>(none(), x => some(f(x)));
-    }
-
-    bind<R>(f: (x: T) => Maybe<R>): Maybe<R> {
-        return this.maybe(none(), f);
     }
 }
 
@@ -62,6 +58,22 @@ export type Some<T> = _Some<T>
 
 export type Maybe<T> = None<T> | Some<T>
 
+export const isFunctor: IsFunctor<'Maybe'> = {
+    map<T, R>(f: (x: T) => R, x: Maybe<T>): Maybe<R> {
+        return x.maybe<Maybe<R>>(none(), x => some(f(x)));
+    }
+}
+
+export const isMonad: Monad.IsMonad<'Maybe'> = {
+    ...isFunctor,
+    bind<T, R>(x: Maybe<T>, f: (x: T) => Maybe<R>): Maybe<R> {
+        return x.maybe(none(), f);
+    },
+    pure<T>(x: T): Maybe<T> {
+        return some(x);
+    }
+}
+
 export function isMaybe(x: unknown): x is Maybe<unknown> {
     return x instanceof _None || x instanceof _Some;
 }
@@ -79,7 +91,7 @@ export function fail<T>(): Maybe<T> {
 }
 
 export function pure<T>(x: T): Maybe<T> {
-    return some(x);
+    return isMonad.pure(x);
 }
 
 export function join<T>(x: Maybe<Maybe<T>>): Maybe<T> {
