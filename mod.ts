@@ -1,3 +1,5 @@
+export * as Arrays from './src/array.ts';
+
 import * as Functional from './src/functional.ts';
 
 export const Either = Functional.Either;

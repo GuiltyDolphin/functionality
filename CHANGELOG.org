@@ -10,15 +10,34 @@
 - dependencies
   - https://deno.land/x/dentest@v0.1.0
 - files
+  - =src/array.ts=
   - =src/either.ts=
   - =src/functor.ts=
   - =src/generic.ts=
   - =src/maybe.ts=
   - =src/monad.ts=
   - =src/unwrap.ts=
+  - =tests/array_test.ts=
   - =tests/deps.ts=
   - =tests/either_test.ts=
   - =tests/maybe_test.ts=
+- =src/array.ts=
+  - functions
+    - =flatten=
+    - =head=
+    - =headDeep=
+    - =isNonEmpty=
+    - =replace=
+    - =splitAt=
+    - =tail=
+  - types
+    - =Nested=
+    - =NonEmpty=
+    - =NonEmptyNested=
+    - =NonEmptyNestedFirstCanDiffer=
+    - =SafeNested=
+    - =SafeNonEmptyNested=
+    - =SafeNonEmptyNestedFirstCanDiffer=
 - =Unwrap= interface for values that can be unwrapped
 
 ** Changed
