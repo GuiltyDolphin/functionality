@@ -5,13 +5,13 @@ import {
 } from '../deps.ts';
 
 import {
-    Arrays,
+    array,
     Either,
     Maybe,
 } from '../../mod.ts';
 
 testGroup('mod.ts',
-    new Test('exports Arrays namespace', () => assertExists(Arrays)),
+    new Test('exports array namespace', () => assertExists(array)),
 
     new Test('exports Either type', () => assertExists(true as unknown as Either<Number, Boolean>)),
     new Test('exports Either namespace', () => assertExists(Either)),

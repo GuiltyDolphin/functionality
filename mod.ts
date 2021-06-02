@@ -1,9 +1,9 @@
-export * as Arrays from './src/array.ts';
+export * as array from './src/array.ts';
 
-import * as Functional from './src/functional.ts';
+import * as functional from './src/functional.ts';
 
-export const Either = Functional.Either;
-export type Either<L, R> = Functional.Either<L, R>
+export const Either = functional.Either;
+export type Either<L, R> = functional.Either<L, R>
 
-export const Maybe = Functional.Maybe;
-export type Maybe<T> = Functional.Maybe<T>;
+export const Maybe = functional.Maybe;
+export type Maybe<T> = functional.Maybe<T>;
