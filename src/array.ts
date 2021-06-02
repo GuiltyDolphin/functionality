@@ -107,8 +107,8 @@ function _flatten<T>(arr: SafeNested<T>, result: T[]): void {
 };
 
 /** Flatten an array of nested arrays into a single flat array. */
-export function flatten<T>(arr: SafeNonEmptyNested<T>): NonEmpty<T>
 export function flatten<F, T>(arr: SafeNonEmptyNestedFirstCanDiffer<F, T>): NonEmptyFirstCanDiffer<F, T>
+export function flatten<T>(arr: SafeNonEmptyNested<T>): NonEmpty<T>
 export function flatten<T>(arr: SafeNested<T>): T[]
 export function flatten<T>(arr: SafeNested<T>) {
     const res: T[] = [];
