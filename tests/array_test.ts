@@ -7,6 +7,12 @@ import {
     testGroup,
 } from './deps.ts';
 
+function testFlatten<T>(description: string, unflattened: array.SafeNested<T>, expected: T[]): Test {
+    return new Test(description, () => {
+        assertEquals(array.flatten(unflattened), expected);
+    });
+}
+
 testGroup('array',
     testGroup('splitAt',
         testGroup('array = [1, 2, 3]',
@@ -34,10 +40,11 @@ testGroup('array',
         new Test('nested array (3 levels)', () => assertEquals(array.headDeep([[[[2], [3]]], 4]), 2)),
     ),
     testGroup('flatten',
-        new Test('empty array', () => assertEquals(array.flatten([]), [])),
-        new Test('flat array', () => assertEquals(array.flatten([1, 2, 3]), [1, 2, 3])),
-        new Test('nested array (1 level)', () => assertEquals(array.flatten([[2, 3], 4]), [2, 3, 4])),
-        new Test('nested array (3 levels)', () => assertEquals(array.flatten([[[[2], [3]]], 4]), [2, 3, 4])),
+        testFlatten("[]", [], []),
+        testFlatten("[1234]", [1, 2, 3, 4], [1, 2, 3, 4]),
+        testFlatten("[1,[2,[3,[4]]]]", [1, [2, [3, [4]]]], [1, 2, 3, 4]),
+        testFlatten("[[[[1],2],3,],4]", [[[[1], 2], 3], 4], [1, 2, 3, 4]),
+        testFlatten("[[1], [[[[2], [3]]]], 4]", [[1], [[[[2], [3]]]], 4], [1, 2, 3, 4]),
     ),
     testGroup('replace',
         new Test('the returned list is not the same array object', () => {
