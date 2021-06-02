@@ -43,8 +43,11 @@ export function replace<T>(xs: T[], i: IndexRange, elt: T): T[] {
 ///////////////////////////
 
 
+/** A non-empty array whose first element can differ in type. */
+export type NonEmptyFirstCanDiffer<F, T> = [F, ...T[]]
+
 /** A non-empty array. */
-export type NonEmpty<T> = [T, ...T[]]
+export type NonEmpty<T> = NonEmptyFirstCanDiffer<T, T>
 
 /** Determine whether an array is non-empty. Can be used as a type predicate. */
 export function isNonEmpty<T>(xs: T[]): xs is NonEmpty<T> {
@@ -105,6 +108,7 @@ function _flatten<T>(arr: SafeNested<T>, result: T[]): void {
 
 /** Flatten an array of nested arrays into a single flat array. */
 export function flatten<T>(arr: SafeNonEmptyNested<T>): NonEmpty<T>
+export function flatten<F, T>(arr: SafeNonEmptyNestedFirstCanDiffer<F, T>): NonEmptyFirstCanDiffer<F, T>
 export function flatten<T>(arr: SafeNested<T>): T[]
 export function flatten<T>(arr: SafeNested<T>) {
     const res: T[] = [];
