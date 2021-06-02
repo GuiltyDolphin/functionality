@@ -74,7 +74,7 @@ export function tail<T>(xs: NonEmpty<T>): T[] {
 export type Nested<T> = (T | Nested<T>)[];
 
 /** Anything other than an array. */
-type NotArray<T> = Exclude<T, Array<any>>
+export type NotArray<T> = Exclude<T, Array<any>>
 
 /**
  * An array whose elements may be arbitrarily nested.

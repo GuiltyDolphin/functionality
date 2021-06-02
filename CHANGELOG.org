@@ -37,6 +37,7 @@
     - =NonEmptyFirstCanDiffer=
     - =NonEmptyNested=
     - =NonEmptyNestedFirstCanDiffer=
+    - =NotArray=
     - =SafeNested=
     - =SafeNonEmptyNested=
     - =SafeNonEmptyNestedFirstCanDiffer=
