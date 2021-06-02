@@ -3,18 +3,38 @@
 ///////////////////////////////////
 
 
+export type IndexRange = number | [number, number]
+
+function startOfRange(x: IndexRange): number {
+    return x instanceof Array ? x[0] : x;
+}
+
+function endOfRange(x: IndexRange): number {
+    return x instanceof Array ? x[1] : x;
+}
+
 /** Split an array into the elements before and after the given index. */
 export function splitAt<T>(n: number, xs: T[]) {
     return [xs.slice(0, n), xs.slice(n)];
 }
 
 /**
- * Return a new array with the element at the given index replaced with the given element.
+ * Return a new array with the element at the given index replaced
+ * with the given element.
+ *
+ * If the index is a range `[start, stop]`, the elements from index
+ * `start` to index `stop` are replaced in their entirety by the
+ * element provided.
  *
  * This does not modify the original array.
  */
-export function replace<T>(xs: T[], i: number, elt: T): T[] {
-    return xs.slice(0, Math.max(i, 0)).concat(i < 0 || i >= xs.length ? [] : elt, xs.slice(i + 1));
+export function replace<T>(xs: T[], i: IndexRange, elt: T): T[] {
+    const start = startOfRange(i);
+    const end = endOfRange(i);
+    if (end < start || end < 0 || start >= xs.length) {
+        return [...xs];
+    }
+    return xs.slice(0, Math.max(start, 0)).concat(elt, xs.slice(end + 1));
 }
 
 
