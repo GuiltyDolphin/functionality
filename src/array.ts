@@ -27,7 +27,7 @@ export function splitAt<T>(n: number, xs: T[]) {
  * will be modified in-place, and the segment that has been replaced
  * is returned instead.
  */
-function replacing<T>(f: (xs: T[]) => T[], xs: T[], range: IndexRange, inplace = false): T[] {
+export function replacing<T>(f: (xs: T[]) => T[], xs: T[], range: IndexRange, inplace = false): T[] {
     const start = Math.max(startOfRange(range), 0);
     const end = endOfRange(range);
     if (end < start || end < 0 || start >= xs.length) {
