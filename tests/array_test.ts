@@ -9,7 +9,10 @@ import {
 
 function testFlatten<T>(description: string, unflattened: array.SafeNested<T>, expected: T[]): Test {
     return new Test(description, () => {
+        const orig = unflattened.slice();
         assertEquals(array.flatten(unflattened), expected);
+        // and check that the original array was not modified
+        assertEquals(unflattened, orig);
     });
 }
 
@@ -45,6 +48,7 @@ testGroup('array',
         testFlatten("[1,[2,[3,[4]]]]", [1, [2, [3, [4]]]], [1, 2, 3, 4]),
         testFlatten("[[[[1],2],3,],4]", [[[[1], 2], 3], 4], [1, 2, 3, 4]),
         testFlatten("[[1], [[[[2], [3]]]], 4]", [[1], [[[[2], [3]]]], 4], [1, 2, 3, 4]),
+        testFlatten("[[undefined], [[[[undefined], [undefined]]]], undefined]", [[undefined], [[[[undefined], [undefined]]]], undefined], [undefined, undefined, undefined, undefined]),
     ),
     testGroup('replace',
         new Test('the returned list is not the same array object', () => {

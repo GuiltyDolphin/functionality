@@ -99,22 +99,33 @@ export type SafeNonEmptyNestedFirstCanDiffer<F extends NotArray<any>, T extends 
 /** Like {@link NonEmptyNested}, but where elements may not be arrays. */
 export type SafeNonEmptyNested<T> = SafeNonEmptyNestedFirstCanDiffer<T, T>
 
-function _flatten<T>(arr: SafeNested<T>, result: T[]): void {
-    for (let i = 0; i < arr.length; i++) {
-        const value = arr[i];
-        Array.isArray(value) ? _flatten(value, result) : result.push(value);
-    }
-};
-
-/** Flatten an array of nested arrays into a single flat array. */
+/**
+ * Flatten an array of nested arrays into a single flat array.
+ *
+ * This does not modify the original array.
+ *
+ * Algorithm inspired by this Stack Overflow answer: https://stackoverflow.com/a/27282907
+ */
 export function flatten<F, T>(arr: SafeNonEmptyNestedFirstCanDiffer<F, T>): NonEmptyFirstCanDiffer<F, T>
 export function flatten<T>(arr: SafeNonEmptyNested<T>): NonEmpty<T>
 export function flatten<T>(arr: SafeNested<T>): T[]
 export function flatten<T>(arr: SafeNested<T>) {
-    const res: T[] = [];
-    _flatten(arr, res);
-    return res as unknown;
-};
+    const result: T[] = [];
+    arr = arr.slice();
+    let elt: T | SafeNested<T> | undefined;
+
+    while (arr.length) {
+        elt = arr.pop();
+        if (Array.isArray(elt)) {
+            arr.push.apply(arr, elt);
+        } else {
+            // array was non-empty, so we know we have a T (avoiding
+            // the use of isNonEmpty for the sake of speed)
+            result.push(elt as T);
+        }
+    }
+    return result.reverse();
+}
 
 /** Return the first non-array element of a nested array. */
 export function headDeep<T>(xs: SafeNonEmptyNested<T>): T {
