@@ -34,13 +34,10 @@
     - =IndexRange=
     - =Nested=
     - =NonEmpty=
-    - =NonEmptyFirstCanDiffer=
     - =NonEmptyNested=
-    - =NonEmptyNestedFirstCanDiffer=
     - =NotArray=
     - =SafeNested=
     - =SafeNonEmptyNested=
-    - =SafeNonEmptyNestedFirstCanDiffer=
 - =Unwrap= interface for values that can be unwrapped
 
 ** Changed

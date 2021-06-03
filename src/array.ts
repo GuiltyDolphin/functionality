@@ -43,11 +43,8 @@ export function replace<T>(xs: T[], i: IndexRange, elt: T): T[] {
 ///////////////////////////
 
 
-/** A non-empty array whose first element can differ in type. */
-export type NonEmptyFirstCanDiffer<F, T> = [F, ...T[]]
-
 /** A non-empty array. */
-export type NonEmpty<T> = NonEmptyFirstCanDiffer<T, T>
+export type NonEmpty<T> = [T, ...T[]]
 
 /** Determine whether an array is non-empty. Can be used as a type predicate. */
 export function isNonEmpty<T>(xs: T[]): xs is NonEmpty<T> {
@@ -83,21 +80,11 @@ export type NotArray<T> = Exclude<T, Array<any>>
  */
 export type SafeNested<T> = Nested<NotArray<T>>
 
-/**
- * A non-empty array whose elements may themselves be nested, non-empty arrays.
- *
- * The first element of each nested array must either itself be a nested array, or an element matching `F`.
- */
-export type NonEmptyNestedFirstCanDiffer<F, T> = [F | NonEmptyNestedFirstCanDiffer<F, T>, ...(T | NonEmptyNestedFirstCanDiffer<F, T>)[]]
-
 /** A non-empty array whose elements may themselves be nested, non-empty arrays. */
-export type NonEmptyNested<T> = NonEmptyNestedFirstCanDiffer<T, T>
-
-/** Like {@link NonEmptyNestedFirstCanDiffer}, but where elements may not be arrays. */
-export type SafeNonEmptyNestedFirstCanDiffer<F extends NotArray<any>, T extends NotArray<any>> = NonEmptyNestedFirstCanDiffer<F, T>
+export type NonEmptyNested<T> = [T | NonEmptyNested<T>, ...(T | NonEmptyNested<T>)[]]
 
 /** Like {@link NonEmptyNested}, but where elements may not be arrays. */
-export type SafeNonEmptyNested<T> = SafeNonEmptyNestedFirstCanDiffer<T, T>
+export type SafeNonEmptyNested<T extends NotArray<any>> = NonEmptyNested<T>
 
 /**
  * Flatten an array of nested arrays into a single flat array.
@@ -106,7 +93,6 @@ export type SafeNonEmptyNested<T> = SafeNonEmptyNestedFirstCanDiffer<T, T>
  *
  * Algorithm inspired by this Stack Overflow answer: https://stackoverflow.com/a/27282907
  */
-export function flatten<F, T>(arr: SafeNonEmptyNestedFirstCanDiffer<F, T>): NonEmptyFirstCanDiffer<F, T>
 export function flatten<T>(arr: SafeNonEmptyNested<T>): NonEmpty<T>
 export function flatten<T>(arr: SafeNested<T>): T[]
 export function flatten<T>(arr: SafeNested<T>) {
