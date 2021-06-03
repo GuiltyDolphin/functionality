@@ -7,13 +7,21 @@ import {
     testGroup,
 } from './deps.ts';
 
-function testFlatten<T>(description: string, unflattened: array.SafeNested<T>, expected: T[]): Test {
+function testNoMutation<T>(description: string, arr: T[], body: (xs: T[]) => void): Test {
     return new Test(description, () => {
-        const orig = unflattened.slice();
-        assertEquals(array.flatten(unflattened), expected);
+        const orig = arr.slice();
+        body(arr);
         // and check that the original array was not modified
-        assertEquals(unflattened, orig);
+        assertEquals(arr, orig);
     });
+}
+
+function testFlatten<T>(description: string, unflattened: array.SafeNested<T>, expected: T[]): Test {
+    return testNoMutation(description, unflattened, arr => assertEquals(array.flatten(arr), expected));
+}
+
+function testReplace<T>(description: string, orig: T[], range: array.IndexRange, val: T, expected: T[]): Test {
+    return testNoMutation(description, orig, arr => assertEquals(array.replace(arr, range, val), expected));
 }
 
 testGroup('array',
@@ -55,17 +63,17 @@ testGroup('array',
             const arr = [1, 2, 3];
             assert(arr !== array.replace(arr, -1, 0));
         }),
-        new Test('empty array', () => assertEquals(array.replace([], 0, 0), [])),
-        new Test('i >= length', () => assertEquals(array.replace([1, 2, 3], 3, 0), [1, 2, 3])),
-        new Test('i < 0', () => assertEquals(array.replace([1, 2, 3], -1, 0), [1, 2, 3])),
-        new Test('element at start of array', () => assertEquals(array.replace([1, 2, 3], 0, 0), [0, 2, 3])),
-        new Test('element in middle of array', () => assertEquals(array.replace([1, 2, 3], 1, 0), [1, 0, 3])),
-        new Test('element at end of array', () => assertEquals(array.replace([1, 2, 3], 2, 0), [1, 2, 0])),
+        testReplace('empty array', [], 0, 0, []),
+        testReplace('i >= length', [1, 2, 3], 3, 0, [1, 2, 3]),
+        testReplace('i < 0', [1, 2, 3], -1, 0, [1, 2, 3]),
+        testReplace('element at start of array', [1, 2, 3], 0, 0, [0, 2, 3]),
+        testReplace('element in middle of array', [1, 2, 3], 1, 0, [1, 0, 3]),
+        testReplace('element at end of array', [1, 2, 3], 2, 0, [1, 2, 0]),
         testGroup('range',
-            new Test('whole array', () => assertEquals(array.replace([1, 2, 3], [0, 2], 0), [0])),
-            new Test('min < 0, max > size of array', () => assertEquals(array.replace([1, 2, 3], [-1, 3], 0), [0])),
-            new Test('part of array', () => assertEquals(array.replace([1, 2, 3, 4], [1, 2], 0), [1, 0, 4])),
-            new Test('max < min', () => assertEquals(array.replace([1, 2, 3, 4], [2, 1], 0), [1, 2, 3, 4])),
+            testReplace('whole array', [1, 2, 3], [0, 2], 0, [0]),
+            testReplace('min < 0, max > size of array', [1, 2, 3], [-1, 3], 0, [0]),
+            testReplace('part of array', [1, 2, 3, 4], [1, 2], 0, [1, 0, 4]),
+            testReplace('max < min', [1, 2, 3, 4], [2, 1], 0, [1, 2, 3, 4]),
         ),
     ),
 ).runAsMain();
