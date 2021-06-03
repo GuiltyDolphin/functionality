@@ -1,7 +1,7 @@
 import * as either from './either.ts';
-export const Either = either;
-export type Either<L, R> = either.Either<L, R>;
+export { either }
+export import Either = either.Either;
 
 import * as maybe from './maybe.ts';
-export const Maybe = maybe;
-export type Maybe<T> = maybe.Maybe<T>;
+export { maybe }
+export import Maybe = maybe.Maybe;
