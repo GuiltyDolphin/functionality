@@ -22,19 +22,19 @@ export function splitAt<T>(n: number, xs: T[]) {
  * Return a new array with the specified segment of the array replaced
  * with the result of applying the function to that part of the array.
  *
- * This does not modify the original array by default, but will modify
- * the array in-place (and return it) if the fourth (optional)
- * argument is true.
+ * By default, the original array is left unmodified. If the fourth
+ * (optional) argument is `true` (default is `false`), then the array
+ * will be modified in-place, and the segment that has been replaced
+ * is returned instead.
  */
 function replacing<T>(f: (xs: T[]) => T[], xs: T[], range: IndexRange, inplace = false): T[] {
     const start = Math.max(startOfRange(range), 0);
     const end = endOfRange(range);
     if (end < start || end < 0 || start >= xs.length) {
-        return inplace ? xs : xs.slice();
+        return inplace ? [] : xs.slice();
     }
     if (inplace) {
-        xs.splice(start, end - start + 1, ...f(xs.slice(start, end)));
-        return xs;
+        return xs.splice(start, end - start + 1, ...f(xs.slice(start, end)));
     } else {
         return xs.slice(0, start).concat(f(xs.slice(start, end))).concat(xs.slice(end + 1));
     }
@@ -48,8 +48,10 @@ function replacing<T>(f: (xs: T[]) => T[], xs: T[], range: IndexRange, inplace =
  * `start` to index `stop` are replaced in their entirety by the
  * element provided.
  *
- * This does not modify the original array by default, but will modify
- * the array in-place if the fourth (optional) argument is true.
+ * By default, the original array is left unmodified. If the fourth
+ * (optional) argument is `true` (default is `false`), then the array
+ * will be modified in-place, and the segment that has been replaced
+ * is returned instead.
  */
 export function replace<T>(xs: T[], i: IndexRange, elt: T, inplace = false): T[] {
     return replacing(_ => [elt], xs, i, inplace);

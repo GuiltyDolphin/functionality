@@ -3,9 +3,9 @@ import { array } from '../mod.ts';
 import {
     assert,
     assertEquals,
-    assertStrictEquals,
     Test,
     testGroup,
+    TestGroup,
 } from './deps.ts';
 
 function testNoMutation<T>(description: string, arr: T[], body: (xs: T[]) => void): Test {
@@ -21,19 +21,19 @@ function testFlatten<T>(description: string, unflattened: array.SafeNested<T>, e
     return testNoMutation(description, unflattened, arr => assertEquals(array.flatten(arr), expected));
 }
 
-function testReplace<T>(description: string, orig: T[], range: array.IndexRange, val: T, expected: T[]): Test {
-    return testNoMutation(description, orig, arr => assertEquals(array.replace(arr, range, val), expected));
-}
-
-function testReplaceInplace<T>(description: string, arr: T[], range: array.IndexRange, val: T, expected: T[]): Test {
-    return new Test(description, () => {
-        const res = array.replace(arr, range, val, true)
-        assertEquals(res, expected);
-        // checked that the array was modified in place.
-        assertEquals(arr, expected);
-        // make sure the returned array is the same array object
-        assertStrictEquals(res, arr);
-    });
+function testReplace<T>(description: string, orig: T[], range: array.IndexRange, val: T, expectedSegment: T[], expected: T[]): TestGroup {
+    const arr = orig.slice();
+    return testGroup(description,
+        testNoMutation('inplace unspecified', arr, arr => assertEquals(array.replace(arr, range, val), expected)),
+        testGroup('inplace',
+            new Test('segment returned', () => {
+                assertEquals(array.replace(arr, range, val, true), expectedSegment);
+            }),
+            new Test('array modified in place', () => {
+                assertEquals(arr, expected);
+            }),
+        ),
+    );
 }
 
 testGroup('array',
@@ -71,39 +71,27 @@ testGroup('array',
         testFlatten("[[undefined], [[[[undefined], [undefined]]]], undefined]", [[undefined], [[[[undefined], [undefined]]]], undefined], [undefined, undefined, undefined, undefined]),
     ),
     testGroup('replace',
-        new Test('the returned list is not the same array object', () => {
-            const arr = [1, 2, 3];
-            assert(arr !== array.replace(arr, -1, 0));
-        }),
-        testReplace('empty array', [], 0, 0, []),
-        testReplace('i >= length', [1, 2, 3], 3, 0, [1, 2, 3]),
-        testReplace('i < 0', [1, 2, 3], -1, 0, [1, 2, 3]),
-        testReplace('element at start of array', [1, 2, 3], 0, 0, [0, 2, 3]),
-        testReplace('element in middle of array', [1, 2, 3], 1, 0, [1, 0, 3]),
-        testReplace('element at end of array', [1, 2, 3], 2, 0, [1, 2, 0]),
-        testGroup('range',
-            testReplace('whole array', [1, 2, 3], [0, 2], 0, [0]),
-            testReplace('min < 0, max > size of array', [1, 2, 3], [-1, 3], 0, [0]),
-            testReplace('part of array', [1, 2, 3, 4], [1, 2], 0, [1, 0, 4]),
-            testReplace('max < min', [1, 2, 3, 4], [2, 1], 0, [1, 2, 3, 4]),
-        ),
-        testGroup('inplace',
-            new Test('the returned list is the same array object', () => {
+        testGroup('the returned list is not the same array object',
+            new Test('inplace = false', () => {
                 const arr = [1, 2, 3];
-                assert(arr === array.replace(arr, -1, 0, true));
+                assert(arr !== array.replace(arr, -1, 0));
             }),
-            testReplaceInplace('empty array', [], 0, 0, []),
-            testReplaceInplace('i >= length', [1, 2, 3], 3, 0, [1, 2, 3]),
-            testReplaceInplace('i < 0', [1, 2, 3], -1, 0, [1, 2, 3]),
-            testReplaceInplace('element at start of array', [1, 2, 3], 0, 0, [0, 2, 3]),
-            testReplaceInplace('element in middle of array', [1, 2, 3], 1, 0, [1, 0, 3]),
-            testReplaceInplace('element at end of array', [1, 2, 3], 2, 0, [1, 2, 0]),
-            testGroup('range',
-                testReplaceInplace('whole array', [1, 2, 3], [0, 2], 0, [0]),
-                testReplaceInplace('min < 0, max > size of array', [1, 2, 3], [-1, 3], 0, [0]),
-                testReplaceInplace('part of array', [1, 2, 3, 4], [1, 2], 0, [1, 0, 4]),
-                testReplaceInplace('max < min', [1, 2, 3, 4], [2, 1], 0, [1, 2, 3, 4]),
-            ),
+            new Test('inplace = true', () => {
+                const arr = [1, 2, 3];
+                assert(arr !== array.replace(arr, -1, 0, true));
+            }),
+        ),
+        testReplace('empty array', [], 0, 0, [], []),
+        testReplace('i >= length', [1, 2, 3], 3, 0, [], [1, 2, 3]),
+        testReplace('i < 0', [1, 2, 3], -1, 0, [], [1, 2, 3]),
+        testReplace('element at start of array', [1, 2, 3], 0, 0, [1], [0, 2, 3]),
+        testReplace('element in middle of array', [1, 2, 3], 1, 0, [2], [1, 0, 3]),
+        testReplace('element at end of array', [1, 2, 3], 2, 0, [3], [1, 2, 0]),
+        testGroup('range',
+            testReplace('whole array', [1, 2, 3], [0, 2], 0, [1, 2, 3], [0]),
+            testReplace('min < 0, max > size of array', [1, 2, 3], [-1, 3], 0, [1, 2, 3], [0]),
+            testReplace('part of array', [1, 2, 3, 4], [1, 2], 0, [2, 3], [1, 0, 4]),
+            testReplace('max < min', [1, 2, 3, 4], [2, 1], 0, [], [1, 2, 3, 4]),
         ),
     ),
 ).runAsMain();
