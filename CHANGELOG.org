@@ -28,6 +28,7 @@
     - =headDeep=
     - =isNonEmpty=
     - =replace=
+    - =replacing=
     - =splitAt=
     - =tail=
   - types
