@@ -3,10 +3,40 @@ import { array } from '../mod.ts';
 import {
     assert,
     assertEquals,
+    assertExists,
     Test,
     testGroup,
     TestGroup,
 } from './deps.ts';
+
+function testExportDef(name: string): Test {
+    return new Test(`exports ${name}`, () => {
+        assertExists((array as any)[name], `exports definition ${name}`);
+    });
+}
+
+testGroup('array exports',
+    ...[
+        'flatten',
+        'head',
+        'headDeep',
+        'isNonEmpty',
+        'replace',
+        'splitAt',
+        'tail',
+    ].map(testExportDef),
+).runAsMain();
+
+// testing existence of types
+type _TestTypes = {
+    t1: array.IndexRange,
+    t2: array.NonEmpty<number>,
+    t3: array.Nested<number>,
+    t4: array.NotArray<number>,
+    t5: array.SafeNested<number>,
+    t6: array.NonEmptyNested<number>,
+    t7: array.SafeNonEmptyNested<number>,
+}
 
 function testNoMutation<T>(description: string, arr: T[], body: (xs: T[]) => void): Test {
     return new Test(description, () => {
