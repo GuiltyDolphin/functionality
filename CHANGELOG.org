@@ -25,8 +25,8 @@
   - =tests/exports/exports_mod_test.ts=
   - =tests/function_test.ts=
   - =tests/maybe_test.ts=
-- =src/array.ts=
-  - functions
+- functions
+  - =src/array.ts=
     - =flatten=
     - =head=
     - =headDeep=
@@ -35,7 +35,8 @@
     - =replacing=
     - =splitAt=
     - =tail=
-  - types
+- types
+  - =src/array.ts=
     - =IndexRange=
     - =Nested=
     - =NonEmpty=
@@ -43,8 +44,7 @@
     - =NotArray=
     - =SafeNested=
     - =SafeNonEmptyNested=
-- =src/function.ts=
-  - types
+  - =src/function.ts=
     - =HasRestParam=
 - =Unwrap= interface for values that can be unwrapped
 
