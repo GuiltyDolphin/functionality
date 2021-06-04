@@ -21,6 +21,8 @@
   - =tests/array_test.ts=
   - =tests/deps.ts=
   - =tests/either_test.ts=
+  - =tests/exports/exports_functional_test.ts=
+  - =tests/exports/exports_mod_test.ts=
   - =tests/function_test.ts=
   - =tests/maybe_test.ts=
 - =src/array.ts=
