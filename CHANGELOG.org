@@ -12,6 +12,7 @@
 - files
   - =src/array.ts=
   - =src/either.ts=
+  - =src/function.ts=
   - =src/functor.ts=
   - =src/generic.ts=
   - =src/maybe.ts=
@@ -20,6 +21,7 @@
   - =tests/array_test.ts=
   - =tests/deps.ts=
   - =tests/either_test.ts=
+  - =tests/function_test.ts=
   - =tests/maybe_test.ts=
 - =src/array.ts=
   - functions
@@ -39,6 +41,9 @@
     - =NotArray=
     - =SafeNested=
     - =SafeNonEmptyNested=
+- =src/function.ts=
+  - types
+    - =HasRestParam=
 - =Unwrap= interface for values that can be unwrapped
 
 ** Changed
