@@ -1,9 +1,25 @@
 import * as fun from '../src/function.ts';
 
+import {
+    assertStrictEquals,
+    testExports,
+    testGroup,
+    Test,
+} from './deps.ts';
+
+testGroup('fun exports',
+    ...testExports(fun, [
+        'withoutRestParam',
+    ]),
+).runAsMain();
+
 // testing existence of types
 type _TestTypes = {
     t1: fun.HasRestParam<any>
+    t2: fun.WithoutRestParam<any>
 }
+
+type Is<T1, T2> = T1 extends T2 ? T2 extends T1 ? true : false : false;
 
 class HasRestParamTests {
     noArgs: fun.HasRestParam<() => number> = false;
@@ -18,3 +34,35 @@ class HasRestParamTests {
     oneArgRestTrickButIsRest: fun.HasRestParam<(...xs: [number, ...number[]]) => number> = true;
     oneArgRestTrickLastIsArray: fun.HasRestParam<(x: number, ...xs: [number, number[]]) => number> = false;
 }
+
+class WithoutRestParamTests {
+    oneRestArg = () => {
+        const f = (...x: number[]) => 7;
+        const wout = fun.withoutRestParam(f);
+        const isRemoved: fun.HasRestParam<typeof wout> = false;
+        const res: Is<typeof wout, () => number> = true;
+    }
+
+    oneMixedArg = () => {
+        const f = (...x: [boolean, ...number[]]) => 7;
+        const wout = fun.withoutRestParam(f);
+        const isRemoved: fun.HasRestParam<typeof wout> = false;
+        const res: Is<typeof wout, (x: boolean) => number> = true;
+    }
+
+    threeArgsAndAMixedRest = () => {
+        const f = (x: number, y: boolean, ...z: [string, ...boolean[]]) => 7;
+        const wout = fun.withoutRestParam(f);
+        const isRemoved: fun.HasRestParam<typeof wout> = false;
+        const res: Is<typeof wout, (x: number, y: boolean, z: string) => number> = true;
+    }
+}
+
+testGroup('fun',
+    testGroup('withoutRestParam',
+        new Test('the function returned is the exact same function', () => {
+            const f = (...args: number[]) => 1;
+            assertStrictEquals(fun.withoutRestParam(f), f);
+        }),
+    ),
+).runAsMain();

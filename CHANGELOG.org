@@ -35,6 +35,8 @@
     - =replacing=
     - =splitAt=
     - =tail=
+  - =src/function.ts=
+    - =withoutRestParam=
 - types
   - =src/array.ts=
     - =IndexRange=
@@ -46,6 +48,7 @@
     - =SafeNonEmptyNested=
   - =src/function.ts=
     - =HasRestParam=
+    - =WithoutRestParam=
 - =Unwrap= interface for values that can be unwrapped
 
 ** Changed
