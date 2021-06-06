@@ -50,6 +50,12 @@ testGroup('Either',
         new Test('join of right(right) is right', () => assertEquals(either.joinLeft(either.right(either.right(2))), either.right(2))),
     ),
 
+    testGroup('join',
+        new Test('join of left is left', () => assertEquals(either.left<number, either.Either<number, string>>(1).join(), either.left(1))),
+        new Test('join of right(left) is left', () => assertEquals(either.right(either.left(true)).join(), either.left(true))),
+        new Test('join of right(right) is right', () => assertEquals(either.right(either.right(2)).join(), either.right(2))),
+    ),
+
     testGroup('mapCollecting',
         new Test('left is left', () => assertEquals(either.left<number, number>(1).mapCollecting(x => either.pure(x + 1)), either.left(1))),
         new Test('right is right', () => assertEquals(either.right(1).mapCollecting(x => either.pure(x + 1)), either.right(2))),

@@ -5,10 +5,6 @@ import {
 } from './functor.ts';
 import { Gen1T, Generic1Key } from './generic.ts';
 
-export function join<K extends Generic1Key, T>(x: Monad<K, Gen1T<K, T>>): Gen1T<K, T> {
-    return x.bind<T>(y => y);
-}
-
 export type IsMonad<M extends Generic1Key> = IsFunctor<M> & {
     pure<T>(x: T): Gen1T<M, T>
     bind<T, R>(x: Gen1T<M, T>, f: (x: T) => Gen1T<M, R>): Gen1T<M, R>
@@ -28,5 +24,9 @@ export abstract class AMonad<M extends Generic1Key, T> extends Functor<M, T> imp
 
     bind<R>(f: (x: T) => Gen1T<M, R>): Gen1T<M, R> {
         return this.isMonad().bind(this as unknown as Gen1T<M, T>, f);
+    }
+
+    join<T>(this: Monad<M, Gen1T<M, T>>): Gen1T<M, T> {
+        return this.bind(x => x);
     }
 }

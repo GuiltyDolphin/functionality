@@ -93,7 +93,3 @@ export function fail<T>(): Maybe<T> {
 export function pure<T>(x: T): Maybe<T> {
     return isMonad.pure(x);
 }
-
-export function join<T>(x: Maybe<Maybe<T>>): Maybe<T> {
-    return Monad.join<'Maybe', T>(x);
-}

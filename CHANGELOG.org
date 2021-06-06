@@ -55,6 +55,9 @@
 
 - =Bind= interface replaced with =Monad=
   - now required to provide a definition of =pure=
+- =join= is no longer exported as a top-level function from
+  =src/maybe.ts= and =src/monad.ts=, but is now a class method
+  of =AMonad= from =src/monad.ts=
 - =mod.ts= and =src/functional.ts= now export =Either= and
   =Maybe= only as types, use =either= and =maybe= for the
   respective namespaces

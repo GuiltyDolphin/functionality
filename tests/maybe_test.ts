@@ -44,9 +44,9 @@ testGroup('Maybe',
     ),
 
     testGroup('join',
-        new Test('join of none is none', () => assertEquals(maybe.join(maybe.none()), maybe.none())),
-        new Test('join of some(none) is none', () => assertEquals(maybe.join(maybe.some(maybe.none())), maybe.none())),
-        new Test('join of some(some) is some', () => assertEquals(maybe.join(maybe.some(maybe.some(3))), maybe.some(3))),
+        new Test('join of none is none', () => assertEquals(maybe.none<maybe.Maybe<unknown>>().join(), maybe.none())),
+        new Test('join of some(none) is none', () => assertEquals(maybe.some(maybe.none()).join(), maybe.none())),
+        new Test('join of some(some) is some', () => assertEquals(maybe.some(maybe.some(3)).join(), maybe.some(3))),
     ),
 
     testGroup('bind',
