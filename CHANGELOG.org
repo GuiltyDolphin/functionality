@@ -58,6 +58,8 @@
 - =join= is no longer exported as a top-level function from
   =src/maybe.ts= and =src/monad.ts=, but is now a class method
   of =AMonad= from =src/monad.ts=
+- =joinLeft= is no longer top-level in =src/either.ts=, but is
+  in =EitherComponent=
 - =mod.ts= and =src/functional.ts= now export =Either= and
   =Maybe= only as types, use =either= and =maybe= for the
   respective namespaces

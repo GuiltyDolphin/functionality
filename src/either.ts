@@ -31,7 +31,12 @@ abstract class EitherComponent<L, R> extends AMonad<'Either', R> implements Unwr
     }
 
     mapCollecting<L2, R2>(f: (x: R) => Either<L2, R2>): Either<L | L2, R2> {
-        return joinLeft(this.map(f));
+        return this.map(f).joinLeft();
+    }
+
+    /** Like {@link join}, but allows the left types to differ. */
+    joinLeft<L1, L2, R>(this: Either<L1, Either<L2, R>>): Either<L1 | L2, R> {
+        return this.either(l => left(l), r => r.either<Either<L1 | L2, R>>(l => left(l), r => right(r)));
     }
 
     /**
@@ -136,10 +141,6 @@ export function fail<L, R>(l: L): Either<L, R> {
 
 export function pure<L, R>(r: R): Either<L, R> {
     return isMonad.pure(r);
-}
-
-export function joinLeft<L1, L2, R>(v: Either<L1, Either<L2, R>>): Either<L1 | L2, R> {
-    return v.either(l => left(l), r => r.either<Either<L1 | L2, R>>(l => left(l), r => right(r)));
 }
 
 export function catEithers<L, R>(es: Either<L, R>[]): Either<L, R[]> {

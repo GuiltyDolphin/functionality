@@ -45,9 +45,9 @@ testGroup('Either',
     ),
 
     testGroup('joinLeft',
-        new Test('join of left is left', () => assertEquals(either.joinLeft(either.left(1)), either.left(1))),
-        new Test('join of right(left) is left', () => assertEquals(either.joinLeft(either.right(either.left(true))), either.left(true))),
-        new Test('join of right(right) is right', () => assertEquals(either.joinLeft(either.right(either.right(2))), either.right(2))),
+        new Test('join of left is left', () => assertEquals(either.left<number, either.Either<boolean, string>>(1).joinLeft(), either.left(1))),
+        new Test('join of right(left) is left', () => assertEquals(either.right(either.left(true)).joinLeft(), either.left(true))),
+        new Test('join of right(right) is right', () => assertEquals(either.right(either.right(2)).joinLeft(), either.right(2))),
     ),
 
     testGroup('join',
