@@ -40,6 +40,10 @@ abstract class EitherComponent<L, R> extends AMonad<'Either', R> implements Unwr
     orThrow(): R | never {
         return this.either(l => { throw l }, r => r);
     }
+
+    unEither<L>(this: Either<L, L>): L {
+        return this.unwrap();
+    }
 }
 
 class _Left<L, R> extends EitherComponent<L, R> implements Unwrap<L> {
@@ -136,10 +140,6 @@ export function pure<L, R>(r: R): Either<L, R> {
 
 export function joinLeft<L1, L2, R>(v: Either<L1, Either<L2, R>>): Either<L1 | L2, R> {
     return v.either(l => left(l), r => r.either<Either<L1 | L2, R>>(l => left(l), r => right(r)));
-}
-
-export function unEither<L>(v: Either<L, L>): L {
-    return v.unwrap();
 }
 
 export function catEithers<L, R>(es: Either<L, R>[]): Either<L, R[]> {

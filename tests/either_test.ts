@@ -97,8 +97,8 @@ testGroup('Either',
     ),
 
     testGroup('unEither',
-        new Test('left is value', () => assertEquals(either.unEither(either.left(1)), 1)),
-        new Test('right is value', () => assertEquals(either.unEither(either.right(2)), 2)),
+        new Test('left is value', () => assertEquals(either.left(1).unEither(), 1)),
+        new Test('right is value', () => assertEquals(either.right(2).unEither(), 2)),
     ),
 
     testGroup('catEithers',

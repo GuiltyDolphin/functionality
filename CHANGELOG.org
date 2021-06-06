@@ -61,6 +61,8 @@
 - =mod.ts= and =src/functional.ts= now export =Either= and
   =Maybe= only as types, use =either= and =maybe= for the
   respective namespaces
+- =unEither= is no longer top-level in =src/either.ts=, but is
+  in =EitherComponent=
 - unwrapping is now more type safe (e.g., you can only
   left-unwrap an =Either<L, R>= if you have established that
   it is actually a left value)
