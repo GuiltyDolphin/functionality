@@ -39,6 +39,11 @@ abstract class EitherComponent<L, R> extends AMonad<'Either', R> implements Unwr
         return this.either(l => left(l), r => r.either<Either<L1 | L2, R>>(l => left(l), r => right(r)));
     }
 
+    // defined here for extra type safety, as `Gen1T` does not capture the `L` type parameter
+    join<L, R>(this: Either<L, Either<L, R>>): Either<L, R> {
+        return AMonad.prototype.join.apply(this);
+    }
+
     /**
      * Throw a left branch, return a right branch.
      */
