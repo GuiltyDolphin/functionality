@@ -3,29 +3,24 @@ import { array } from '../mod.ts';
 import {
     assert,
     assertEquals,
-    assertExists,
     Test,
+    testExports,
     testGroup,
     TestGroup,
 } from './deps.ts';
 
-function testExportDef(name: string): Test {
-    return new Test(`exports ${name}`, () => {
-        assertExists((array as any)[name], `exports definition ${name}`);
-    });
-}
-
 testGroup('array exports',
-    ...[
-        'flatten',
-        'head',
-        'headDeep',
-        'isNonEmpty',
-        'replace',
-        'replacing',
-        'splitAt',
-        'tail',
-    ].map(testExportDef),
+    ...testExports(array,
+        [
+            'flatten',
+            'head',
+            'headDeep',
+            'isNonEmpty',
+            'replace',
+            'replacing',
+            'splitAt',
+            'tail',
+        ])
 ).runAsMain();
 
 // testing existence of types
