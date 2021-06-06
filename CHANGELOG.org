@@ -63,6 +63,8 @@
 - =mod.ts= and =src/functional.ts= now export =Either= and
   =Maybe= only as types, use =either= and =maybe= for the
   respective namespaces
+- monads may now specify =bind= or =join= (the definition of
+  the other will be inferred automatically)
 - =unEither= is no longer top-level in =src/either.ts=, but is
   in =EitherComponent=
 - unwrapping is now more type safe (e.g., you can only
