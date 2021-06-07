@@ -17,6 +17,7 @@
   - =src/generic.ts=
   - =src/maybe.ts=
   - =src/monad.ts=
+  - =src/types.ts=
   - =src/unwrap.ts=
   - =tests/array_test.ts=
   - =tests/deps.ts=
@@ -25,6 +26,7 @@
   - =tests/exports/exports_mod_test.ts=
   - =tests/function_test.ts=
   - =tests/maybe_test.ts=
+  - =tests/types_test.ts=
 - functions
   - =src/array.ts=
     - =flatten=
@@ -49,6 +51,16 @@
   - =src/function.ts=
     - =HasRestParam=
     - =WithoutRestParam=
+  - =src/types.ts=
+    - =And=
+    - =Extends=
+    - =Is=
+    - =ITE=
+    - =Not=
+    - =Or=
+    - =TyProp=
+    - =Unless=
+    - =When=
 - =Unwrap= interface for values that can be unwrapped
 
 ** Changed

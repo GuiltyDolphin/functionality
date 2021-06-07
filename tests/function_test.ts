@@ -7,6 +7,8 @@ import {
     Test,
 } from './deps.ts';
 
+import { Is } from '../src/types.ts';
+
 testGroup('fun exports',
     ...testExports(fun, [
         'withoutRestParam',
@@ -18,8 +20,6 @@ type _TestTypes = {
     t1: fun.HasRestParam<any>
     t2: fun.WithoutRestParam<any>
 }
-
-type Is<T1, T2> = T1 extends T2 ? T2 extends T1 ? true : false : false;
 
 class HasRestParamTests {
     noArgs: fun.HasRestParam<() => number> = false;
