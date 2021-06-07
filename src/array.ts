@@ -1,3 +1,10 @@
+import {
+    Extends,
+    Not,
+    When,
+} from './types.ts';
+
+
 ///////////////////////////////////
 ///// General Array Operations /////
 ///////////////////////////////////
@@ -91,20 +98,22 @@ export function tail<T>(xs: NonEmpty<T>): T[] {
 export type Nested<T> = (T | Nested<T>)[];
 
 /** Anything other than an array. */
-export type NotArray<T> = Exclude<T, Array<any>>
+type NotArray<T> = Not<Extends<T, Array<any>>>;
+
+type WhenNotArray<T, L> = When<NotArray<T>, L>;
 
 /**
  * An array whose elements may be arbitrarily nested.
  *
  * The type of elements cannot itself be an array.
  */
-export type SafeNested<T> = Nested<NotArray<T>>
+export type SafeNested<T> = WhenNotArray<T, Nested<T>>;
 
 /** A non-empty array whose elements may themselves be nested, non-empty arrays. */
 export type NonEmptyNested<T> = [T | NonEmptyNested<T>, ...(T | NonEmptyNested<T>)[]]
 
 /** Like {@link NonEmptyNested}, but where elements may not be arrays. */
-export type SafeNonEmptyNested<T extends NotArray<any>> = NonEmptyNested<T>
+export type SafeNonEmptyNested<T> = WhenNotArray<T, NonEmptyNested<T>>;
 
 /**
  * Flatten an array of nested arrays into a single flat array.
@@ -117,8 +126,8 @@ export function flatten<T>(arr: SafeNonEmptyNested<T>): NonEmpty<T>
 export function flatten<T>(arr: SafeNested<T>): T[]
 export function flatten<T>(arr: SafeNested<T>) {
     const result: T[] = [];
-    arr = arr.slice();
-    let elt: T | SafeNested<T> | undefined;
+    arr = arr.slice() as SafeNested<T>;
+    let elt: T | Nested<T> | undefined;
 
     while (arr.length) {
         elt = arr.pop();

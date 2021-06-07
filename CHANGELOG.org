@@ -45,7 +45,6 @@
     - =Nested=
     - =NonEmpty=
     - =NonEmptyNested=
-    - =NotArray=
     - =SafeNested=
     - =SafeNonEmptyNested=
   - =src/function.ts=

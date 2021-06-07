@@ -28,13 +28,12 @@ type _TestTypes = {
     t1: array.IndexRange,
     t2: array.NonEmpty<number>,
     t3: array.Nested<number>,
-    t4: array.NotArray<number>,
     t5: array.SafeNested<number>,
     t6: array.NonEmptyNested<number>,
     t7: array.SafeNonEmptyNested<number>,
 }
 
-function testNoMutation<T>(description: string, arr: T[], body: (xs: T[]) => void): Test {
+function testNoMutation<LTy extends any[]>(description: string, arr: LTy, body: (xs: LTy) => void): Test {
     return new Test(description, () => {
         const orig = arr.slice();
         body(arr);
@@ -89,7 +88,7 @@ testGroup('array',
         new Test('nested array (3 levels)', () => assertEquals(array.headDeep([[[[2], [3]]], 4]), 2)),
     ),
     testGroup('flatten',
-        testFlatten("[]", [], []),
+        testFlatten<number>("[]", [], []),
         testFlatten("[1234]", [1, 2, 3, 4], [1, 2, 3, 4]),
         testFlatten("[1,[2,[3,[4]]]]", [1, [2, [3, [4]]]], [1, 2, 3, 4]),
         testFlatten("[[[[1],2],3,],4]", [[[[1], 2], 3], 4], [1, 2, 3, 4]),
