@@ -5,6 +5,13 @@
 
 * Unreleased
 
+** Added
+
+- types
+  - =src/array.ts=
+    - =NotArray=
+    - =WhenNotArray=
+
 * 0.2.0 - 2021-06-07
 
 ** Added

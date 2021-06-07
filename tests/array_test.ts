@@ -28,9 +28,11 @@ type _TestTypes = {
     t1: array.IndexRange,
     t2: array.NonEmpty<number>,
     t3: array.Nested<number>,
+    t4: array.NotArray<number>,
     t5: array.SafeNested<number>,
     t6: array.NonEmptyNested<number>,
     t7: array.SafeNonEmptyNested<number>,
+    t8: array.WhenNotArray<number, number>,
 }
 
 function testNoMutation<LTy extends any[]>(description: string, arr: LTy, body: (xs: LTy) => void): Test {

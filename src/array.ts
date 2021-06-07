@@ -108,9 +108,10 @@ export function tail<T>(xs: NonEmpty<T, any>): T[] {
 export type Nested<T> = (T | Nested<T>)[];
 
 /** Anything other than an array. */
-type NotArray<T> = Not<Extends<T, Array<any>>>;
+export type NotArray<T> = Not<Extends<T, Array<any>>>;
 
-type WhenNotArray<T, L> = When<NotArray<T>, L>;
+/** Stands as the second type if the first is not array-like. */
+export type WhenNotArray<T, L> = When<NotArray<T>, L>;
 
 type WhenBothNotArray<T, T0, L> = When<And<NotArray<T>, NotArray<T0>>, L>;
 
