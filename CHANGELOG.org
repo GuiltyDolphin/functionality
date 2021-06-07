@@ -76,6 +76,8 @@
   respective namespaces
 - monads may now specify =bind= or =join= (the definition of
   the other will be inferred automatically)
+- non-empty array types now support (optionally) specifying
+  the type of the first element
 - =unEither= is no longer top-level in =src/either.ts=, but is
   in =EitherComponent=
 - unwrapping is now more type safe (e.g., you can only

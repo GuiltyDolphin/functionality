@@ -1,4 +1,5 @@
 import {
+    And,
     Extends,
     Not,
     When,
@@ -70,21 +71,30 @@ export function replace<T>(xs: T[], i: IndexRange, elt: T, inplace = false): T[]
 ///////////////////////////
 
 
-/** A non-empty array. */
-export type NonEmpty<T> = [T, ...T[]]
+/**
+ * A non-empty array.
+ *
+ * The first type parameter is the type of elements of the array.
+ *
+ * The second (optional) parameter is the type of the first element of
+ * the array, which defaults to the same as the first parameter.
+ */
+export type NonEmpty<T, T0 = T> = [T0, ...T[]]
 
 /** Determine whether an array is non-empty. Can be used as a type predicate. */
-export function isNonEmpty<T>(xs: T[]): xs is NonEmpty<T> {
+export function isNonEmpty<T, T0>(xs: [T0, ...T[]]): xs is NonEmpty<T, T0>
+export function isNonEmpty<T>(xs: T[]): xs is NonEmpty<T>
+export function isNonEmpty<T, T0 = T>(xs: [T0, ...T[]] | T[]) {
     return xs.length > 0;
 }
 
 /** Return the first element of an array. */
-export function head<T>(xs: NonEmpty<T>): T {
+export function head<T0>(xs: NonEmpty<any, T0>): T0 {
     return xs[0];
 }
 
 /** Return all but the first element of a non-empty array. */
-export function tail<T>(xs: NonEmpty<T>): T[] {
+export function tail<T>(xs: NonEmpty<T, any>): T[] {
     return splitAt(1, xs)[1];
 }
 
@@ -102,6 +112,8 @@ type NotArray<T> = Not<Extends<T, Array<any>>>;
 
 type WhenNotArray<T, L> = When<NotArray<T>, L>;
 
+type WhenBothNotArray<T, T0, L> = When<And<NotArray<T>, NotArray<T0>>, L>;
+
 /**
  * An array whose elements may be arbitrarily nested.
  *
@@ -109,11 +121,17 @@ type WhenNotArray<T, L> = When<NotArray<T>, L>;
  */
 export type SafeNested<T> = WhenNotArray<T, Nested<T>>;
 
-/** A non-empty array whose elements may themselves be nested, non-empty arrays. */
-export type NonEmptyNested<T> = [T | NonEmptyNested<T>, ...(T | NonEmptyNested<T>)[]]
+/** A non-empty array whose elements may themselves be nested, non-empty arrays.
+ *
+ * The first type parameter is the type of elements of the array.
+ *
+ * The second (optional) parameter is the type of the first element of
+ * the array, which defaults to the same as the first parameter.
+ */
+export type NonEmptyNested<T, T0 = T> = [T0 | NonEmptyNested<T, T0>, ...(T | NonEmptyNested<T, T0>)[]]
 
 /** Like {@link NonEmptyNested}, but where elements may not be arrays. */
-export type SafeNonEmptyNested<T> = WhenNotArray<T, NonEmptyNested<T>>;
+export type SafeNonEmptyNested<T, T0 = T> = WhenBothNotArray<T, T0, NonEmptyNested<T, T0>>;
 
 /**
  * Flatten an array of nested arrays into a single flat array.
@@ -122,7 +140,7 @@ export type SafeNonEmptyNested<T> = WhenNotArray<T, NonEmptyNested<T>>;
  *
  * Algorithm inspired by this Stack Overflow answer: https://stackoverflow.com/a/27282907
  */
-export function flatten<T>(arr: SafeNonEmptyNested<T>): NonEmpty<T>
+export function flatten<T, T0>(arr: SafeNonEmptyNested<T, T0>): NonEmpty<T0 | T, T0>
 export function flatten<T>(arr: SafeNested<T>): T[]
 export function flatten<T>(arr: SafeNested<T>) {
     const result: T[] = [];
@@ -143,7 +161,9 @@ export function flatten<T>(arr: SafeNested<T>) {
 }
 
 /** Return the first non-array element of a nested array. */
-export function headDeep<T>(xs: SafeNonEmptyNested<T>): T {
+export function headDeep<T>(xs: SafeNonEmptyNested<T>): T
+export function headDeep<T, T0>(xs: SafeNonEmptyNested<T, T0>): T0
+export function headDeep<T, T0 = T>(xs: SafeNonEmptyNested<T, T0>) {
     let h = head(xs);
     while (h instanceof Array) {
         h = head(h);
