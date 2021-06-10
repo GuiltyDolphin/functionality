@@ -3,8 +3,11 @@ import {
     Extends,
     Is,
     ITE,
+    KeysOfType,
     Not,
+    OmitWithType,
     Or,
+    PickWithType,
     Unless,
     When,
 } from '../src/types.ts';
@@ -66,4 +69,24 @@ class IsTest<P, Q, R> {
     restArgsIsFn: Is<(x: Q) => P, (x: Q, ...xs: R[]) => P> = true;
     neverIsNever: Is<never, never> = true;
     numberIsNotNever: Is<number, never> = false;
+}
+
+class KeysOfTypeTest {
+    canPickNever: Is<KeysOfType<{ x: never }, never>, "x"> = true;
+    pickingWhenThereIsNoMatchIsNever: Is<KeysOfType<{ x: number, y: string }, boolean>, never> = true;
+    pickingWithPartialMatchIsJustTheMatchingKeys: Is<KeysOfType<{ x: number, y: string, z: string }, string>, "y" | "z"> = true;
+    pickingWithUnion: Is<KeysOfType<{ x: number, y: string, z: boolean }, number | string>, "x" | "y"> = true;
+}
+
+class OmitWithTypeTest {
+    canOmitNever: Is<OmitWithType<{ x: never }, never>, {}> = true;
+    omittingWhenThereIsNoMatchIsOriginalType: Is<OmitWithType<{ x: number, y: string }, boolean>, { x: number, y: string }> = true;
+    omittingWithPartialMatchIsJustTheNonMatchingKeys: Is<OmitWithType<{ x: number, y: string, z: string }, string>, { x: number }> = true;
+    omittingWithUnion: Is<OmitWithType<{ x: number, y: string, z: boolean }, number | string>, { z: boolean }> = true;
+}
+class PickWithTypeTest {
+    canPickNever: Is<PickWithType<{ x: never }, never>, { x: never }> = true;
+    pickingWhenThereIsNoMatchIsEmptyObjectType: Is<PickWithType<{ x: number, y: string }, boolean>, {}> = true;
+    pickingWithPartialMatchIsJustTheMatchingKeys: Is<PickWithType<{ x: number, y: string, z: string }, string>, { y: string, z: string }> = true;
+    pickingWithUnion: Is<PickWithType<{ x: number, y: string, z: boolean }, number | string>, { x: number, y: string }> = true;
 }
