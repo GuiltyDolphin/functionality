@@ -5,6 +5,8 @@
 
 * Unreleased
 
+* 0.2.2 - 2021-06-10
+
 ** Added
 
 - functions
