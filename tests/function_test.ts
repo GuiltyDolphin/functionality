@@ -94,4 +94,29 @@ testGroup('fun',
             ),
         ),
     ),
+    testGroup('takeN',
+        testGroup('finite iterator',
+            new Test('want to take more values than exist', () => {
+                assertEquals(fun.takeN([1, 2, 3].values(), 5), [3, [1, 2, 3]]);
+            }),
+            new Test('want to take less values than exist', () => {
+                assertEquals(fun.takeN([1, 2, 3].values(), 2), [2, [1, 2]]);
+            }),
+            new Test('want to take as many values as exist', () => {
+                assertEquals(fun.takeN([1, 2, 3].values(), 3), [3, [1, 2, 3]]);
+            }),
+        ),
+        testGroup('infinite iterator',
+            new Test('correct first 5 values', () => {
+                function* iter(): Generator<number> {
+                    let x = 0;
+                    while (true) {
+                        yield x;
+                        x++;
+                    }
+                }
+                assertEquals(fun.takeN(iter(), 5), [5, [0, 1, 2, 3, 4]]);
+            }),
+        ),
+    ),
 ).runAsMain();

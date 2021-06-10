@@ -38,3 +38,20 @@ export function ntimes(f: (count: number) => void, n: number): void {
         f(i);
     }
 }
+
+/**
+ * Return an array formed by repeated values of `iter`, up to `n`
+ * times if possible, as well as number of actual successful yields.
+ */
+export function takeN<T>(iter: IterableIterator<T>, n: number): [number, T[]] {
+    const res: T[] = [];
+    let count = 0;
+    for (count = 0; count < n; count++) {
+        const ir = iter.next();
+        if (ir.done) {
+            break;
+        }
+        res.push(ir.value);
+    }
+    return [count, res];
+}

@@ -12,6 +12,7 @@
 - functions
   - =src/function.ts=
     - =ntimes=
+    - =takeN=
 - types
   - =src/array.ts=
     - =NotArray=
