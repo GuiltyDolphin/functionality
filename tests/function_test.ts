@@ -1,6 +1,7 @@
 import * as fun from '../src/function.ts';
 
 import {
+    assertEquals,
     assertStrictEquals,
     testExports,
     testGroup,
@@ -64,5 +65,33 @@ testGroup('fun',
             const f = (...args: number[]) => 1;
             assertStrictEquals(fun.withoutRestParam(f), f);
         }),
+    ),
+    testGroup('ntimes',
+        testGroup('push',
+            testGroup('no arguments',
+                new Test('count is 0', () => {
+                    const res: number[] = [];
+                    fun.ntimes(() => res.push(0), 0);
+                    assertEquals(res, []);
+                }),
+                new Test('non-zero count', () => {
+                    const res: number[] = [];
+                    fun.ntimes(() => res.push(0), 5);
+                    assertEquals(res, [0, 0, 0, 0, 0]);
+                }),
+            ),
+            testGroup('count argument',
+                new Test('count is 0', () => {
+                    const res: number[] = [];
+                    fun.ntimes((n) => res.push(n), 0);
+                    assertEquals(res, []);
+                }),
+                new Test('non-zero count', () => {
+                    const res: number[] = [];
+                    fun.ntimes((n) => res.push(n), 5);
+                    assertEquals(res, [1, 2, 3, 4, 5]);
+                }),
+            ),
+        ),
     ),
 ).runAsMain();

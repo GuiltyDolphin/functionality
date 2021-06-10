@@ -9,6 +9,9 @@
 
 ** Added
 
+- functions
+  - =src/function.ts=
+    - =ntimes=
 - types
   - =src/array.ts=
     - =NotArray=

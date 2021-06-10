@@ -26,3 +26,15 @@ export type WithoutRestParam<F extends (...args: any[]) => any> = (...args: Remo
 export function withoutRestParam<F extends (...args: any[]) => any>(f: HasRestParam<F> extends true ? F : never): WithoutRestParam<F> {
     return f;
 }
+
+/**
+ * Perform `f` for `n` counts.
+ *
+ * `f` must be able to accept either no arguments, or a single
+ * argument that is the current count (starting from 1).
+ */
+export function ntimes(f: (count: number) => void, n: number): void {
+    for (let i = 1; i <= n; i++) {
+        f(i);
+    }
+}
