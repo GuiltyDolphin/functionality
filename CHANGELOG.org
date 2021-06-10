@@ -14,6 +14,7 @@
     - =NotArray=
     - =WhenNotArray=
   - =src/types.ts=
+    - =ExceptKeysOfType=
     - =KeysOfType=
     - =OmitWithType=
     - =PickWithType=

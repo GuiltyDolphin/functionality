@@ -30,6 +30,9 @@ export type KeysOfType<Type, Union> = {
     [k in keyof Type]: Type[k] extends Union ? k : never
 }[keyof Type];
 
+/** From `Type` extract all keys whose corresponding values are not assignable to `ExcludedUnion`. */
+export type ExceptKeysOfType<Type, ExcludedUnion> = keyof OmitWithType<Type, ExcludedUnion>;
+
 /** Construct a type by picking the set of properties from `Type` whose values are assignable to `Union`. */
 export type PickWithType<Type, Union> = Pick<Type, KeysOfType<Type, Union>>;
 

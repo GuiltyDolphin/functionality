@@ -1,5 +1,6 @@
 import {
     And,
+    ExceptKeysOfType,
     Extends,
     Is,
     ITE,
@@ -76,6 +77,13 @@ class KeysOfTypeTest {
     pickingWhenThereIsNoMatchIsNever: Is<KeysOfType<{ x: number, y: string }, boolean>, never> = true;
     pickingWithPartialMatchIsJustTheMatchingKeys: Is<KeysOfType<{ x: number, y: string, z: string }, string>, "y" | "z"> = true;
     pickingWithUnion: Is<KeysOfType<{ x: number, y: string, z: boolean }, number | string>, "x" | "y"> = true;
+}
+
+class ExceptKeysOfTypeTest {
+    canExcludeNever: Is<ExceptKeysOfType<{ x: never }, never>, never> = true;
+    excludingWhenThereIsNoMatchIsAllKeys: Is<ExceptKeysOfType<{ x: number, y: string }, boolean>, "x" | "y"> = true;
+    excludingWithPartialMatchIsJustTheNonMatchingKeys: Is<ExceptKeysOfType<{ x: number, y: string, z: string }, string>, "x"> = true;
+    excludingWithUnion: Is<ExceptKeysOfType<{ x: number, y: string, z: boolean }, number | string>, "z"> = true;
 }
 
 class OmitWithTypeTest {
