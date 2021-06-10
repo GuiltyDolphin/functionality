@@ -5,8 +5,6 @@
 
 * Unreleased
 
-* 0.2.1 - 2021-06-07
-
 ** Added
 
 - functions
@@ -15,14 +13,20 @@
     - =ntimes=
     - =takeN=
 - types
-  - =src/array.ts=
-    - =NotArray=
-    - =WhenNotArray=
   - =src/types.ts=
     - =ExceptKeysOfType=
     - =KeysOfType=
     - =OmitWithType=
     - =PickWithType=
+
+* 0.2.1 - 2021-06-07
+
+** Added
+
+- types
+  - =src/array.ts=
+    - =NotArray=
+    - =WhenNotArray=
 
 * 0.2.0 - 2021-06-07
 
