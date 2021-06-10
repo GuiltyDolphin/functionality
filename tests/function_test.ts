@@ -119,4 +119,25 @@ testGroup('fun',
             }),
         ),
     ),
+    testGroup('iterate',
+        testGroup('no count specified',
+            new Test('first iteration is initial value', () => {
+                const iter = fun.iterate((x) => x + 1, 0);
+                assertEquals(iter.next().value, 0);
+            }),
+            new Test('correct first 5 iterations', () => {
+                const iter = fun.iterate((x) => x + 2, 0);
+                assertEquals(iter.next().value, 0);
+                assertEquals(iter.next().value, 2);
+                assertEquals(iter.next().value, 4);
+                assertEquals(iter.next().value, 6);
+                assertEquals(iter.next().value, 8);
+            }),
+        ),
+        testGroup('count specified',
+            new Test('correct 5 elements', () => {
+                assertEquals(fun.iterate((x) => x + 2, 0, 5), [0, 2, 4, 6, 8]);
+            }),
+        ),
+    ),
 ).runAsMain();

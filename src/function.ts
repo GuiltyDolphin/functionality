@@ -55,3 +55,26 @@ export function takeN<T>(iter: IterableIterator<T>, n: number): [number, T[]] {
     }
     return [count, res];
 }
+
+/**
+ * Iterate through applications of `f` to `x`, starting with `x`.
+ *
+ * If the third (optional) argument `n` is defined, then return the
+ * first `n` iterations. If `n` is undefined, return an infinite
+ * generator instead.
+ */
+export function iterate<T>(f: (x: T) => T, x: T, n: number): T[]
+export function iterate<T>(f: (x: T) => T, x: T): Generator<T>
+export function iterate<T>(f: (x: T) => T, x: T, n?: number) {
+    function* iterateGen(f: (x: T) => T, x: T): Generator<T> {
+        while (true) {
+            yield x;
+            x = f(x);
+        }
+    }
+    if (n === undefined) {
+        return iterateGen(f, x);
+    } else {
+        return takeN(iterateGen(f, x), n)[1];
+    }
+}
