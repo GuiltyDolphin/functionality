@@ -7,3 +7,5 @@ export import Either = functional.Either;
 
 export import maybe = functional.maybe;
 export import Maybe = functional.Maybe;
+
+export * as types from './src/types.ts';

@@ -10,6 +10,7 @@ import {
     Either,
     maybe,
     Maybe,
+    types,
 } from '../../mod.ts';
 
 testGroup('mod.ts',
@@ -20,4 +21,6 @@ testGroup('mod.ts',
 
     new Test('exports Maybe type', () => assertExists(true as unknown as Maybe<Number>)),
     new Test('exports maybe namespace', () => assertExists(maybe)),
+
+    new Test('exports types namespace', () => assertExists(types)),
 ).runAsMain();

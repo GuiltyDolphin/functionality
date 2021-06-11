@@ -10,6 +10,8 @@
 - types
   - =src/types.ts=
     - =Constructor=
+- =types= export added to =mod.ts= (exports the =src/types.ts=
+  module)
 
 * 0.2.2 - 2021-06-10
 
