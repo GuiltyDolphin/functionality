@@ -1,5 +1,6 @@
 import {
     And,
+    Constructor,
     ExceptKeysOfType,
     Extends,
     Is,
@@ -98,4 +99,22 @@ class PickWithTypeTest {
     pickingWhenThereIsNoMatchIsEmptyObjectType: Is<PickWithType<{ x: number, y: string }, boolean>, {}> = true;
     pickingWithPartialMatchIsJustTheMatchingKeys: Is<PickWithType<{ x: number, y: string, z: string }, string>, { y: string, z: string }> = true;
     pickingWithUnion: Is<PickWithType<{ x: number, y: string, z: boolean }, number | string>, { x: number, y: string }> = true;
+}
+
+class SimpleClass {
+    value: number;
+
+    constructor(x: number, y: boolean) {
+        this.value = x;
+    }
+}
+
+type SimpleClassConstructor = typeof SimpleClass;
+
+class ConstructorTest {
+    constructorNoArgs: Extends<SimpleClassConstructor, Constructor> = true;
+    constructorWithTypeArg: Is<SimpleClassConstructor, Constructor<SimpleClass>> = true;
+    constructorWithTypeArgBad: Extends<SimpleClassConstructor, Constructor<Boolean>> = false;
+    constructorWithTypeAndParamArg: Is<SimpleClassConstructor, Constructor<SimpleClass, [number, boolean]>> = true;
+    constructorWithTypeAndParamArgIncorrect: Is<SimpleClassConstructor, Constructor<SimpleClass, [boolean, boolean]>> = false;
 }

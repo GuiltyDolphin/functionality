@@ -5,6 +5,12 @@
 
 * Unreleased
 
+** Added
+
+- types
+  - =src/types.ts=
+    - =Constructor=
+
 * 0.2.2 - 2021-06-10
 
 ** Added

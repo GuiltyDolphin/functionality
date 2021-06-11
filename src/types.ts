@@ -38,3 +38,6 @@ export type PickWithType<Type, Union> = Pick<Type, KeysOfType<Type, Union>>;
 
 /** Construct a type by omitting the set of properties from `Type` whose values are assignable to `ExcludedUnion`. */
 export type OmitWithType<Type, ExcludedUnion> = Omit<Type, KeysOfType<Type, ExcludedUnion>>;
+
+/** Type of constructors for values of type `T` that take `Args` parameters. */
+export type Constructor<T = {}, Args extends any[] = [...any[]]> = { new(...args: Args): T }
