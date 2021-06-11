@@ -113,10 +113,38 @@ class SimpleClass {
 
 type SimpleClassConstructor = typeof SimpleClass;
 
+class C1 {
+    x: number;
+    constructor(x: number) {
+        this.x = x;
+    }
+}
+
+class C2 extends C1 {
+    y: boolean
+
+    constructor(x: number) {
+        super(x)
+        this.y = true;
+    }
+}
+
+type C1Constructor = typeof C1;
+type C2Constructor = typeof C2;
+
 class ConstructorTest {
     constructorNoArgs: Extends<SimpleClassConstructor, Constructor> = true;
     constructorWithTypeArg: Is<SimpleClassConstructor, Constructor<SimpleClass>> = true;
     constructorWithTypeArgBad: Extends<SimpleClassConstructor, Constructor<Boolean>> = false;
     constructorWithTypeAndParamArg: Is<SimpleClassConstructor, Constructor<SimpleClass, [number, boolean]>> = true;
     constructorWithTypeAndParamArgIncorrect: Is<SimpleClassConstructor, Constructor<SimpleClass, [boolean, boolean]>> = false;
+
+    constructorsWithExtends = class {
+        refl1: Is<C1Constructor, Constructor<C1>> = true;
+        refl2: Is<C2Constructor, Constructor<C2>> = true;
+        notConstructorOfChild: Is<C1Constructor, Constructor<C2>> = false;
+        notExtendsConstructorOfChild: Extends<C1Constructor, Constructor<C2>> = false;
+        notConstructorOfParent: Is<C2Constructor, Constructor<C1>> = false;
+        extendsConstructorOfParent: Extends<C2Constructor, Constructor<C1>> = true;
+    }
 }
