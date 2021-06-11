@@ -92,6 +92,7 @@ class OmitWithTypeTest {
     omittingWithPartialMatchIsJustTheNonMatchingKeys: Is<OmitWithType<{ x: number, y: string, z: string }, string>, { x: number }> = true;
     omittingWithUnion: Is<OmitWithType<{ x: number, y: string, z: boolean }, number | string>, { z: boolean }> = true;
 }
+
 class PickWithTypeTest {
     canPickNever: Is<PickWithType<{ x: never }, never>, { x: never }> = true;
     pickingWhenThereIsNoMatchIsEmptyObjectType: Is<PickWithType<{ x: number, y: string }, boolean>, {}> = true;
