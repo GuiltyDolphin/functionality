@@ -102,10 +102,12 @@ class PickWithTypeTest {
 }
 
 class SimpleClass {
-    value: number;
+    x: number;
+    y: boolean;
 
     constructor(x: number, y: boolean) {
-        this.value = x;
+        this.x = x;
+        this.y = y;
     }
 }
 
