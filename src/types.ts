@@ -41,3 +41,38 @@ export type OmitWithType<Type, ExcludedUnion> = Omit<Type, KeysOfType<Type, Excl
 
 /** Type of constructors for values of type `T` that take `Args` parameters. */
 export type Constructor<T = {}, Args extends any[] = [...any[]]> = { new(...args: Args): T }
+
+/**
+ * `true` if the argument is a {@link Constructor}, `false` otherwise.
+ *
+ * Can be used as a type predicate to assert that `c` is a
+ * {@link Constructor}.
+ */
+export function isConstructor(c: any): c is Constructor {
+    try {
+        Reflect.construct(Object, [], c);
+        return true;
+    } catch (_) {
+        return false;
+    }
+}
+
+/**
+ * `true` if the argument is _the_ constructor for `val`, `false`
+ * otherwise.
+ *
+ * Can be used as a type predicate to assert that `c` is a
+ * {@link Constructor} for values of the same type as `val`.
+ */
+export function isConstructorFor<T extends object>(c: any, val: T): c is Constructor<T> {
+    return isConstructor(c) && Reflect.getPrototypeOf(val)?.constructor === c;
+}
+
+/** Return the constructor for the given value if one exists, `null` otherwise. */
+export function getConstructor<T extends object>(x: T): Constructor<T> | null {
+    const proto = Reflect.getPrototypeOf(x);
+    if (proto !== null && isConstructorFor(proto.constructor, x)) {
+        return proto.constructor;
+    }
+    return null;
+}

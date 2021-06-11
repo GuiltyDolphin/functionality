@@ -1,9 +1,19 @@
 import {
+    assertEquals,
+    assertStrictEquals,
+    Test,
+    testGroup
+} from './deps.ts';
+
+import {
     And,
     Constructor,
     ExceptKeysOfType,
     Extends,
+    getConstructor,
     Is,
+    isConstructor,
+    isConstructorFor,
     ITE,
     KeysOfType,
     Not,
@@ -129,6 +139,8 @@ class C2 extends C1 {
     }
 }
 
+class C3 extends C2 { }
+
 type C1Constructor = typeof C1;
 type C2Constructor = typeof C2;
 
@@ -147,4 +159,26 @@ class ConstructorTest {
         notConstructorOfParent: Is<C2Constructor, Constructor<C1>> = false;
         extendsConstructorOfParent: Extends<C2Constructor, Constructor<C1>> = true;
     }
+
+    isConstructorIsTypePredicate: Is<typeof isConstructor, (c: unknown) => c is Constructor> = true;
+    isConstructorForIsTypePredicate: Is<typeof isConstructorFor, <T extends object>(c: unknown, v: T) => c is Constructor<T>> = true;
 }
+
+testGroup('functions',
+    testGroup('isConstructor',
+        new Test('Boolean is a constructor', () => assertEquals(isConstructor(Boolean), true)),
+        new Test('7 is not a constructor', () => assertEquals(isConstructor(7), false)),
+    ),
+    testGroup('isConstructorFor',
+        new Test('with a non-constructor', () => assertEquals(isConstructorFor(new C1(1), new C1(1)), false)),
+        new Test('with a parent constructor', () => assertEquals(isConstructorFor(C1, new C2(1)), false)),
+        new Test('with a child constructor', () => assertEquals(isConstructorFor(C2, new C1(1)), false)),
+        new Test('with correct constructor', () => assertEquals(isConstructorFor(C1, new C1(1)), true)),
+    ),
+    testGroup('getConstructor',
+        new Test('with a boolean', () => assertStrictEquals(getConstructor(new Boolean(true)), Boolean)),
+        new Test('with child class with no explicit constructor', () => assertStrictEquals(getConstructor(new C3(1)), C3)),
+        new Test('with object {}', () => assertStrictEquals(getConstructor({}), Object)),
+        new Test('with object with no constructor', () => assertStrictEquals(getConstructor(Reflect.getPrototypeOf({}) ?? {}), null)),
+    ),
+).runAsMain();
