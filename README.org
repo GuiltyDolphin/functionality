@@ -1,5 +1,9 @@
 #+TITLE: Functionality
 
+#+BEGIN_EXPORT html
+<a href="https://doc.deno.land/https/deno.land/x/functionality/mod.ts"><img src="https://doc.deno.land/badge.svg" alt="deno doc"></a>
+#+END_EXPORT
+
 This package provides utilities for functional programming
 with TypeScript.
 
