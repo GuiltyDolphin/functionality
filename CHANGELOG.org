@@ -5,6 +5,12 @@
 
 * Unreleased
 
+** Changed
+
+- renamed functor interfaces/classes for consistency
+  - =Functor= renamed to =AFunctor=
+  - =FunctorI= renamed to =Functor=
+
 * 0.2.3 - 2021-06-11
 
 ** Added
