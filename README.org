@@ -3,6 +3,72 @@
 This package provides utilities for functional programming
 with TypeScript.
 
+* Documentation
+
+The main entry point is [[./mod.ts][mod.ts]]. The full documentation is
+available at [[https://doc.deno.land/https/deno.land/x/functionality/mod.ts][doc.deno.land]].
+
+- [[./src/array.ts][src/array.ts]]
+
+  Provides utilities for working with arrays.
+
+- [[./src/either.ts][src/either.ts]]
+
+  Provides the ~Either<L, R>~ type, which captures values that
+  can be /either/ an ~L~ or an ~R~. Can be used to model
+  failure when you want to provide more information than
+  ~Maybe~ can (e.g., ~Either<string, R>~ could be used to
+  provide a descriptive ~string~ message about what went
+  wrong). Can also be used to model branching and
+  alternatives.
+
+- [[./src/function.ts][src/function.ts]]
+
+  Provides utilities for working with and manipulating
+  functions.
+
+- [[./src/functional.ts][src/functional.ts]]
+
+  Exports types and functions useful for general functional
+  programming, e.g., the ~Either~ and ~Maybe~ types.
+
+- [[./src/functor.ts][src/functor.ts]]
+
+  Defines the ~Functor~ interface, which describes types which
+  act like "containers" that can be mapped over, whilst
+  preserving the underlying "container" structure.
+
+- [[./src/generic.ts][src/generic.ts]]
+
+  Provides infrastructure for recording information about
+  types, such as how to apply type parameters to them. For
+  example, the ~Maybe~ type is registered in the ~Generic1<T>~
+  interface as ~'Maybe': Maybe<T>~, which enables a form of
+  "partial type application".
+
+- [[./src/maybe.ts][src/maybe.ts]]
+
+  Provides the ~Maybe<T>~ type, which captures the notion of
+  "optional" values. Can also be used to model results which
+  may fail, when you don't need to provide more information
+  about failure (if you do, then use ~Either~).
+
+- [[./src/monad.ts][src/monad.ts]]
+
+  Defines the ~Monad~ interface, which describes types that
+  can sequence computations in some computational
+  context. Useful for e.g., threading state.
+
+- [[./src/types.ts][src/types.ts]]
+
+  Provides various utility types and functions for working
+  with types.
+
+- [[./src/unwrap.ts][src/unwrap.ts]]
+
+  Provides the ~Unwrap~ interface, which describes types that
+  can be unwrapped to provide an inner value.
+
 * Development
 
 ** Coverage

@@ -5,6 +5,10 @@
 
 * Unreleased
 
+** Added
+
+- documentation overview in [[./README.org][README]].
+
 ** Changed
 
 - renamed functor interfaces/classes for consistency
