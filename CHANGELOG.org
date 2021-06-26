@@ -5,6 +5,15 @@
 
 * Unreleased
 
+** Added
+
+- =mod.ts= now exports:
+  - =fun=
+  - =functor=
+  - =generic=
+  - =monad=
+  - =unwrap=
+
 * 0.2.4 - 2021-06-26
 
 ** Added
