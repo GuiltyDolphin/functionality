@@ -5,6 +5,8 @@
 
 * Unreleased
 
+* 0.2.5 - 2021-06-26
+
 ** Added
 
 - =mod.ts= now exports:
